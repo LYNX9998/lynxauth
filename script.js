@@ -16,7 +16,6 @@ let currentOwnerId = null;
 
 // --- popup msg ---
 function showToast(msg, type='success') {
-    // This now triggers the "Cool Popup"
     const overlay = document.getElementById('popup-overlay');
     const title = document.getElementById('popup-title');
     const message = document.getElementById('popup-message');
@@ -114,18 +113,37 @@ async function createApp() {
     }
 }
 
+let cachedApps = [];
+
+
 async function loadApps() {
     const list = document.getElementById('apps-list');
     list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Loading...</div>';
+    
     const res = await apiCall('/apps/list', {ownerid:currentOwnerId});
     list.innerHTML = '';
     
     if(res && res.apps) {
+        cachedApps = res.apps; 
+        
+
+        const sel = document.getElementById('wh-app-select');
+        sel.innerHTML = '<option value="" disabled selected>Select an App...</option>';
+        cachedApps.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.appid;
+            opt.innerText = a.name;
+            sel.appendChild(opt);
+        });
+
         document.getElementById('stat-total-apps').innerText = res.apps.length;
+        
+
         res.apps.forEach(app => {
-            const div = document.createElement('div');
-            div.className = 'app-row';
-            div.innerHTML = `
+
+             const div = document.createElement('div');
+             div.className = 'app-row';
+             div.innerHTML = `
                 <div class="app-row-header" onclick="this.parentElement.classList.toggle('expanded')">
                     <div class="app-title"><i class="fa-solid fa-cube"></i> ${app.name}</div>
                     <div style="display:flex; align-items:center;">
@@ -141,7 +159,6 @@ async function loadApps() {
                     <div style="display:flex; gap:10px; margin-bottom:20px; align-items:center; flex-wrap:wrap;">
                         <input id="u-name-${app.appid}" class="auth-input" style="margin:0; background:#111; flex:1; min-width:120px;" placeholder="Username">
                         <input id="u-pass-${app.appid}" class="auth-input" style="margin:0; background:#111; flex:1; min-width:120px;" placeholder="Password">
-                        <!-- ADDED DATE TIME PICKER HERE -->
                         <input type="datetime-local" id="u-exp-${app.appid}" class="auth-input" style="margin:0; background:#111; color:#fff; flex:1; min-width:160px;">
                         <button class="btn-primary-sm" onclick="createUser('${app.appid}')">Create User</button>
                     </div>
@@ -154,7 +171,48 @@ async function loadApps() {
             list.appendChild(div);
         });
     }
-    if(list.innerHTML === '') list.innerHTML = '<div style="text-align:center; padding:30px; border:1px dashed #333; border-radius:8px; color:#666;">No applications found.</div>';
+}
+
+
+function loadWebhookSettings() {
+    const appid = document.getElementById('wh-app-select').value;
+    const app = cachedApps.find(a => a.appid === appid);
+    
+    if(app && app.webhook_config) {
+        const c = app.webhook_config;
+        document.getElementById('wh-url').value = c.url || '';
+        document.getElementById('wh-enabled').checked = c.enabled || false;
+        document.getElementById('wh-show-hwid').checked = c.show_hwid || false;
+        document.getElementById('wh-show-ip').checked = c.show_ip || false;
+        document.getElementById('wh-show-app').checked = c.show_app || false;
+        document.getElementById('wh-show-exp').checked = c.show_expiry || false;
+    } else {
+        document.getElementById('wh-url').value = '';
+        document.querySelectorAll('#webhooks-content input[type="checkbox"]').forEach(i => i.checked = false);
+    }
+}
+
+async function saveWebhook() {
+    const appid = document.getElementById('wh-app-select').value;
+    if(!appid) return showToast("Select an app first", "danger");
+    
+    const body = {
+        appid: appid,
+        webhook_url: document.getElementById('wh-url').value,
+        enabled: document.getElementById('wh-enabled').checked,
+        show_hwid: document.getElementById('wh-show-hwid').checked,
+        show_ip: document.getElementById('wh-show-ip').checked,
+        show_app: document.getElementById('wh-show-app').checked,
+        show_expiry: document.getElementById('wh-show-exp').checked
+    };
+    
+    const res = await apiCall('/apps/webhook/save', body);
+    if(res.status === 'success') {
+        showToast("Webhook Configuration Saved");
+
+        const app = cachedApps.find(a => a.appid === appid);
+        if(app) app.webhook_config = { url: body.webhook_url, enabled: body.enabled, show_hwid: body.show_hwid, show_ip: body.show_ip, show_app: body.show_app, show_expiry: body.show_expiry };
+    }
 }
 
 async function createUser(appid) {
@@ -164,7 +222,7 @@ async function createUser(appid) {
     
     if(!u || !p) return showToast("Enter credentials", "danger");
     
-    //  expire_str to backend
+
     const res = await apiCall('/users/create', {
         ownerid: currentOwnerId, 
         appid: appid, 
@@ -203,7 +261,7 @@ async function deleteUser(uid, aid, name) { await apiCall('/users/delete', {user
 
 
 // --- code example ---
-// --- CODE EXAMPLE LOGIC ---
+
 let currentLang = 'cs';
 const getCode = (lang) => {
     const oid = currentOwnerId || "YOUR_OWNER_ID";
@@ -362,6 +420,7 @@ window.showView = (v) => {
     if(v === 'applications') navId = 'nav-apps';
     else if(v === 'integration') navId = 'nav-integration';
     else if(v === 'instructions') navId = 'nav-instructions';
+    else if(v === 'webhooks') navId = 'nav-webhooks';
     
     document.getElementById(navId).classList.add('active');
 };
@@ -369,3 +428,4 @@ window.toggleMobileMenu = () => {
     document.querySelector('.sidebar').classList.toggle('open');
     document.getElementById('sidebar-overlay').classList.toggle('open');
 };
+
