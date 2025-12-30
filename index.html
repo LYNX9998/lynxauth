@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LYNX | Next Gen Authentication</title>
+<link rel="icon" type="image/png" href="Assets/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --bg-deep: #020202;
+        --bg-surface: #0a0a0a;
+        --primary: #6366f1;
+        --primary-glow: rgba(99, 102, 241, 0.4);
+        --accent: #a855f7;
+        --text-main: #ffffff;
+        --text-muted: #9ca3af;
+        --border: #1f1f1f;
+        --success: #10b981;
+        --danger: #ef4444;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    html {
+        scrollbar-width: none;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--bg-deep);
+        color: var(--text-main);
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    .bg-grid {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .glow-spot {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.6;
+    }
+    .glow-top { top: -200px; left: 50%; transform: translateX(-50%); }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -1px;
+    }
+    
+    .logo i { color: var(--primary); }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+
+    .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+
+    .nav-links a:hover { color: white; }
+
+    .btn-nav {
+        padding: 8px 20px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+        padding-top: 124px;
+    }
+
+    .badge {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        margin-bottom: 20px;
+        animation: fadeIn 1s ease;
+    }
+
+    .hero h1 {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        line-height: 1.1;
+        background: linear-gradient(to right, #fff, #9ca3af);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        max-width: 800px;
+        animation: slideUp 0.8s ease;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        max-width: 600px;
+        margin-bottom: 40px;
+        animation: slideUp 1s ease;
+    }
+
+    .hero-btns {
+        display: flex;
+        gap: 20px;
+        animation: slideUp 1.2s ease;
+    }
+
+    .btn-primary {
+        padding: 14px 32px;
+        background: var(--primary);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+        border: 1px solid var(--primary);
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: transparent;
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
+    }
+
+    .btn-secondary {
+        padding: 14px 32px;
+        background: transparent;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        border: 1px solid var(--border);
+        transition: 0.3s;
+    }
+    .btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.05); }
+
+    .terminal-showcase {
+        margin-top: 60px;
+        background: #080808;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0;
+        width: 100%;
+        max-width: 700px;
+        min-height: 300px;
+        box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8);
+        animation: float 6s ease-in-out infinite;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .win-bar {
+        padding: 12px 15px;
+        background: #111;
+        border-bottom: 1px solid var(--border);
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+    .win-title { margin-left: 10px; font-size: 0.8rem; color: #555; font-family: monospace; }
+
+    .terminal-content {
+        padding: 25px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        color: #ccc;
+        text-align: left;
+        flex: 1;
+    }
+
+    .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background: var(--primary);
+        margin-left: 5px;
+        animation: blink 1s infinite;
+        vertical-align: middle;
+    }
+
+    .type-line { margin-bottom: 8px; display: block; }
+    .highlight { color: var(--primary); }
+    .success-text { color: var(--success); }
+
+    .features-section {
+        padding: 100px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    .section-header h2 { font-size: 2.5rem; margin-bottom: 15px; }
+    .section-header p { color: var(--text-muted); }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        padding: 30px;
+        border-radius: 12px;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+        box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
+    }
+
+    .card-icon {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+        background: rgba(99, 102, 241, 0.1);
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+    }
+
+    .card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .card p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .pricing-section {
+        padding: 80px 20px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        margin-top: 40px;
+    }
+
+    .pricing-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        padding: 40px;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .pricing-card.popular {
+        border: 1px solid var(--primary);
+        box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.2);
+        background: linear-gradient(180deg, rgba(99,102,241,0.05) 0%, var(--bg-surface) 100%);
+    }
+
+    .pop-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4);
+    }
+
+    .price-title { font-size: 1.2rem; margin-bottom: 10px; font-weight: 600; color: #fff; }
+    .price-num { font-size: 2.5rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: baseline; }
+    .price-sub { font-size: 1rem; color: var(--text-muted); font-weight: 400; margin-left: 5px; }
+
+    .feature-list { list-style: none; margin-bottom: 30px; flex: 1; }
+    .feature-list li { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #ccc; }
+    .f-check { color: var(--success); }
+    .f-cross { color: #444; }
+    .text-dim { color: #555; text-decoration: line-through; }
+
+    .btn-price {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    
+    .btn-price.outline { border: 1px solid var(--border); color: white; background: transparent; }
+    .btn-price.outline:hover { border-color: white; }
+    .btn-price.filled { background: var(--primary); color: white; border: none; }
+    .btn-price.filled:hover { opacity: 0.9; }
+
+    .stats-wrap {
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        background: #050505;
+        padding: 50px 0;
+    }
+
+    .stats-inner {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+        gap: 30px;
+    }
+    
+    .stat-item h4 { font-size: 2.5rem; font-weight: 800; color: white; }
+    .stat-item p { color: var(--text-muted); }
+
+    footer {
+        border-top: 1px solid var(--border);
+        padding: 60px 20px;
+        text-align: center;
+        margin-top: 50px;
+        background: #010101;
+    }
+    .footer-logo { font-weight: 800; font-size: 1.5rem; margin-bottom: 20px; display: inline-block; }
+    .socials { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+    .socials a { color: var(--text-muted); font-size: 1.2rem; transition: 0.2s; }
+    .socials a:hover { color: var(--primary); }
+
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    @media(max-width: 768px) {
+        nav { padding: 15px 20px; }
+        .nav-links { display: none; }
+        
+        .hero { padding-top: 100px; }
+        .hero h1 { font-size: 2.2rem; }
+        .hero p { font-size: 1rem; }
+        
+        .hero-btns {
+            flex-direction: column;
+            width: 100%;
+            gap: 15px;
+        }
+        .btn-primary, .btn-secondary {
+            width: 100%;
+            padding: 12px;
+        }
+
+        .terminal-showcase {
+            margin-top: 40px;
+            min-height: 250px;
+        }
+
+        .grid { grid-template-columns: 1fr; }
+        .card { padding: 25px; }
+        
+        .pricing-grid { grid-template-columns: 1fr; }
+        .pricing-card { padding: 25px; }
+        
+        .stats-inner { flex-direction: column; gap: 40px; }
+    }
+</style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+<div class="glow-spot glow-top"></div>
+
+<nav>
+    <div class="logo"><i class="fa-solid fa-shield-cat"></i> LYNX</div>
+    <div class="nav-links">
+        <a href="#features">Why Us?</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Documentation</a>
+    </div>
+    <a href="panel.html" class="btn-nav">Login <i class="fa-solid fa-arrow-right" style="font-size:0.7rem; margin-left:5px;"></i></a>
+</nav>
+
+<section class="hero">
+    <div class="badge">V1.0 STABLE RELEASE</div>
+    <h1>Secure Licensing for <br> <span style="color:var(--primary)">Modern Applications</span></h1>
+    <p>The most advanced, fully customizable authentication system for C# and Python developers. Protect your software with military-grade security in minutes.</p>
+    
+    <div class="hero-btns">
+        <a href="panel.html" class="btn-primary">Get Started</a>
+        <a href="#pricing" class="btn-secondary">View Pricing</a>
+    </div>
+
+    <div class="terminal-showcase">
+        <div class="win-bar">
+            <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            <div class="win-title">lynx_installer.exe</div>
+        </div>
+        <div class="terminal-content" id="terminal-box">
+            <span id="type-target"></span><span class="cursor"></span>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="features-section">
+    <div class="section-header">
+        <h2>Why Choose Lynx?</h2>
+        <p>Built for developers, by developers.</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h3>Fully Customizable</h3>
+            <p>Tailor every aspect of the authentication flow. From custom JSON responses to variable management, you control the data.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-lock"></i></div>
+            <h3>Hardware Locking</h3>
+            <p>Prevent account sharing with advanced HWID locking. Licenses are bound to a specific machine automatically.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-cloud-bolt"></i></div>
+            <h3>99.9% Uptime</h3>
+            <p>Hosted on high-performance cloud infrastructure ensuring your users can always log in, no matter where they are.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon"><i class="fa-brands fa-python"></i></div>
+            <h3>Multi-Language</h3>
+            <p>Native support for C# (.NET) and Python. Easy to use libraries allow integration in less than 5 minutes.</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <h3>Seller Dashboard</h3>
+            <p>Manage users, reset HWIDs, delete licenses, and view analytics from a beautiful, responsive seller panel.</p>
+        </div>
+
+         <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-code"></i></div>
+            <h3>Encrypted Traffic</h3>
+            <p>All communication between your app and our servers is encrypted using end-to-end industry standards.</p>
+        </div>
+    </div>
+</section>
+
+<section id="pricing" class="pricing-section">
+    <div class="section-header">
+        <h2>Simple Pricing</h2>
+        <p>Start for free, upgrade when you scale.</p>
+    </div>
+
+    <div class="pricing-grid">
+        <div class="pricing-card">
+            <div class="price-title">Starter Developer</div>
+            <div class="price-num">Free <span class="price-sub">/ forever</span></div>
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-check f-check"></i> Unlimited Apps</li>
+                <li><i class="fa-solid fa-check f-check"></i> Hardware ID Locking</li>
+                <li><i class="fa-solid fa-check f-check"></i> Secure Variables</li>
+                <li><i class="fa-solid fa-check f-check"></i> 99% Uptime SLA</li>
+                <li class="text-dim"><i class="fa-solid fa-xmark f-cross"></i> Web Dashboard Customization</li>
+                <li class="text-dim"><i class="fa-solid fa-xmark f-cross"></i> Private API URL</li>
+                <li class="text-dim"><i class="fa-solid fa-xmark f-cross"></i> Private Auth Dashboard</li>
+            </ul>
+            <a href="panel.html" class="btn-price outline">Start Free</a>
+        </div>
+
+        <div class="pricing-card popular">
+            <div class="pop-badge">MOST POPULAR</div>
+            <div class="price-title">Advanced Developer</div>
+            <div class="price-num">₹2000 <span class="price-sub">/ year</span></div>
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-check f-check"></i> Unlimited Apps</li>
+                <li><i class="fa-solid fa-check f-check"></i> Hardware ID Locking ( Advanced )</li>
+                <li><i class="fa-solid fa-check f-check"></i> Secure Variables</li>
+                <li><i class="fa-solid fa-check f-check"></i> 99.99% Uptime SLA</li>
+                <li><i class="fa-solid fa-check f-check"></i> Web Dashboard Customization</li>
+                <li><i class="fa-solid fa-check f-check"></i> Private API URL</li>
+                <li><i class="fa-solid fa-check f-check"></i> Private Auth Dashboard</li>
+            </ul>
+            <a href="https://discord.gg/Sz5ZGfk3GX" class="btn-price filled">Purchase Now</a>
+        </div>
+    </div>
+</section>
+
+<section class="stats-wrap">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <h4>2k+</h4>
+            <p>Users Protected</p>
+        </div>
+        <div class="stat-item">
+            <h4>500+</h4>
+            <p>Active Applications</p>
+        </div>
+        <div class="stat-item">
+            <h4>0.01s</h4>
+            <p>Response Time</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="logo footer-logo"><i class="fa-solid fa-shield-cat"></i> LYNX AUTH</div>
+    <div class="socials">
+        <a href="https://discord.gg/Sz5ZGfk3GX"><i class="fa-brands fa-discord"></i></a>
+        <a href="#"><i class="fa-brands fa-github"></i></a>
+        <a href="https://www.youtube.com/@LYNX_X_999"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+    <p style="color:#555; font-size:0.8rem;">&copy; 2025 Lynx Authentication. All rights reserved.</p>
+</footer>
+
+<script>
+    const textLines = [
+        "> Initializing Lynx Security Protocol...",
+        "> Establishing secure connection to server...",
+        "> Verifying integrity hash [SHA-256]...",
+        "> Connection Established. [OK]",
+        "> Welcome to the future of authentication."
+    ];
+    
+    const target = document.getElementById('type-target');
+    let lineIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    
+    // Config
+    const typeSpeed = 30;
+    const deleteSpeed = 10;
+    const pauseBeforeDelete = 2500;
+    const pauseBeforeRestart = 1000;
+
+    function typeWriter() {
+        if (!isDeleting) {
+
+            if (lineIndex < textLines.length) {
+                const currentStr = textLines[lineIndex];
+                
+                if (charIndex < currentStr.length) {
+                    const char = currentStr.charAt(charIndex);
+
+                    if(target.lastChild && target.lastChild.nodeType === 3) {
+                        target.lastChild.nodeValue += char;
+                    } else {
+                        target.appendChild(document.createTextNode(char));
+                    }
+                    charIndex++;
+                    setTimeout(typeWriter, typeSpeed + (Math.random() * 20)); 
+                } else {
+
+                    target.appendChild(document.createElement('br'));
+                    target.appendChild(document.createElement('br'));
+                    lineIndex++;
+                    charIndex = 0;
+                    setTimeout(typeWriter, 300);
+                }
+            } else {
+
+                isDeleting = true;
+                setTimeout(typeWriter, pauseBeforeDelete);
+            }
+        } else {
+
+            const lastNode = target.lastChild;
+            
+            if (lastNode) {
+                if (lastNode.nodeType === 3) { 
+                    const val = lastNode.nodeValue;
+                    if (val.length > 0) {
+                        lastNode.nodeValue = val.substring(0, val.length - 1);
+                        setTimeout(typeWriter, deleteSpeed);
+                    } else {
+                        target.removeChild(lastNode);
+                        typeWriter();
+                    }
+                } else if (lastNode.tagName === 'BR') {
+                    target.removeChild(lastNode);
+                    setTimeout(typeWriter, deleteSpeed);
+                }
+            } else {
+                isDeleting = false;
+                lineIndex = 0;
+                charIndex = 0;
+                setTimeout(typeWriter, pauseBeforeRestart);
+            }
+        }
+    }
+    
+    window.onload = typeWriter;
+</script>
+</body>
+</html>
