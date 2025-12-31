@@ -114,6 +114,17 @@
 
             <div id="dashboard-content" class="content-view active">
                 <div class="stats-row">
+                    <!-- NEW STAT BOXES -->
+                    <div class="stat-box">
+                        <div class="stat-title">Balance</div>
+                        <div class="stat-num" id="stat-coins" style="color: #FFD700;">Loading...</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">Subscription</div>
+                        <div class="stat-num" id="stat-sub" style="font-size:1.1rem;">Loading...</div>
+                    </div>
+                    <!-- END NEW STAT BOXES -->
+                    
                     <div class="stat-box">
                         <div class="stat-title">Applications</div>
                         <div class="stat-num" id="stat-total-apps">0</div>
@@ -145,6 +156,7 @@
                 </div>
 
                 <div id="new-app-panel" class="panel-card" style="display:none; padding:20px;">
+                    <div style="margin-bottom:10px; font-size:0.8rem; color:#888;">Cost: <span style="color:var(--primary);">100 Coins</span> (Free for Premium)</div>
                     <div style="display:flex; gap:10px;">
                         <input type="text" id="app-name-input" class="auth-input" style="background:#111; margin:0;"
                             placeholder="App Name">
