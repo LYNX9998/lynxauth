@@ -479,6 +479,61 @@
         
         .stats-inner { flex-direction: column; gap: 40px; }
     }
+
+
+
+    .partners-section {
+        padding: 80px 20px;
+        text-align: center;
+        background: radial-gradient(circle at center, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+    }
+
+    .partners-header {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        letter-spacing: 3px;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        font-weight: 700;
+        opacity: 0.7;
+    }
+
+    .partners-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+        flex-wrap: wrap;
+    }
+
+    .partner-img {
+        height: 80px; 
+        width: auto;
+        object-fit: contain;
+        transition: transform 0.3s ease, filter 0.3s ease;
+        filter: grayscale(100%) brightness(0.8);
+    }
+
+    .partner-img:hover {
+        filter: grayscale(0%) brightness(1);
+        transform: scale(1.05);
+    }
+
+    .collab-x {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.2rem; 
+        font-weight: 800;
+        color: #ffffff;    
+        opacity: 0.8;     
+        position: relative;
+    }
+
+
+    @media(max-width: 768px) {
+        .partners-flex { gap: 30px; }
+        .partner-img { height: 50px; }
+        .collab-x { font-size: 1.5rem; }
+    }
 </style>
 </head>
 <body>
@@ -608,6 +663,17 @@
     </div>
 </section>
 
+<section class="partners-section">
+    <div class="partners-header">OFFICIAL PARTNERS</div>
+    <div class="partners-flex">
+        <img src="Assets/LYNX.jpg" alt="Lynx" class="partner-img">
+        
+        <div class="collab-x">X</div>
+        
+        <img src="Assets/COLLAB.png" alt="Collab" class="partner-img">
+    </div>
+</section>
+
 <section class="stats-wrap">
     <div class="stats-inner">
         <div class="stat-item">
@@ -624,6 +690,7 @@
         </div>
     </div>
 </section>
+
 
 <footer>
     <div class="logo footer-logo"><i class="fa-solid fa-shield-cat"></i> LYNX AUTH</div>
