@@ -1,4 +1,3 @@
-
 const firebaseConfig = {
     apiKey: "AIzaSyAdxgaXA0cJBESZnA679Ej2i0zo3e-40BA",
     authDomain: "lynx-auth-d17dd.firebaseapp.com",
@@ -81,6 +80,20 @@ async function syncUser(u) {
         if(data.status==='success') {
             currentOwnerId = data.ownerid;
             document.getElementById('ownerid-display').innerText = currentOwnerId;
+            
+            // --- UPDATED: Display Coins and Tier in Overview ---
+            document.getElementById('stat-coins').innerText = data.coins;
+            
+            const subEl = document.getElementById('stat-sub');
+            if(data.is_premium) {
+                subEl.innerText = "Premium";
+                subEl.style.color = "var(--primary)";
+            } else {
+                subEl.innerText = "Free Tier";
+                subEl.style.color = "#888";
+            }
+            // ----------------------------------------------------
+            
             setBackendStatus(true);
             loadApps();
             updateCodeView(); 
@@ -94,7 +107,13 @@ async function apiCall(ep, body) {
     try {
         const res = await fetch(API_URL+ep, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
         setBackendStatus(true);
-        return await res.json();
+        const data = await res.json();
+        
+        if(res.status === 400 || res.status === 404 || res.status === 500) {
+            showToast(data.detail || "Error occurred", "danger");
+            return null;
+        }
+        return data;
     } catch(e) { 
         setBackendStatus(false); 
         return null; 
@@ -110,6 +129,7 @@ async function createApp() {
         showToast("App Created Successfully");
         document.getElementById('new-app-panel').style.display='none';
         loadApps();
+        syncUser(auth.currentUser); // Refresh coins/stats
     }
 }
 
@@ -205,7 +225,7 @@ async function saveWebhook() {
     };
     
     const res = await apiCall('/apps/webhook/save', body);
-    if(res.status === 'success') {
+    if(res && res.status === 'success') {
         showToast("Webhook Configuration Saved");
 
         const app = cachedApps.find(a => a.appid === appid);
@@ -230,13 +250,14 @@ async function createUser(appid) {
         expire_str: exp 
     });
     
-    if(res.status==='success') showToast("User Created Successfully");
+    if(res && res.status==='success') showToast("User Created Successfully");
 }
 
 async function deleteApp(appid) {
     if(!confirm("Delete app?")) return;
     await apiCall('/apps/delete', {appid});
     loadApps();
+    syncUser(auth.currentUser); // Refresh stats
 }
 
 async function openUsersModal(appid, name) {
@@ -245,7 +266,7 @@ async function openUsersModal(appid, name) {
     cont.innerHTML = 'Loading...';
     const res = await apiCall('/users/list', {appid});
     cont.innerHTML = '';
-    if(res.users) {
+    if(res && res.users) {
         res.users.forEach(u => {
             const div = document.createElement('div');
             div.className = 'user-row';
@@ -426,4 +447,3 @@ window.toggleMobileMenu = () => {
     document.querySelector('.sidebar').classList.toggle('open');
     document.getElementById('sidebar-overlay').classList.toggle('open');
 };
-
