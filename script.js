@@ -183,7 +183,6 @@ function loadWebhookSettings() {
         document.getElementById('wh-url').value = c.url || '';
         document.getElementById('wh-enabled').checked = c.enabled || false;
         document.getElementById('wh-show-hwid').checked = c.show_hwid || false;
-        document.getElementById('wh-show-ip').checked = c.show_ip || false;
         document.getElementById('wh-show-app').checked = c.show_app || false;
         document.getElementById('wh-show-exp').checked = c.show_expiry || false;
     } else {
@@ -201,7 +200,6 @@ async function saveWebhook() {
         webhook_url: document.getElementById('wh-url').value,
         enabled: document.getElementById('wh-enabled').checked,
         show_hwid: document.getElementById('wh-show-hwid').checked,
-        show_ip: document.getElementById('wh-show-ip').checked,
         show_app: document.getElementById('wh-show-app').checked,
         show_expiry: document.getElementById('wh-show-exp').checked
     };
@@ -211,7 +209,7 @@ async function saveWebhook() {
         showToast("Webhook Configuration Saved");
 
         const app = cachedApps.find(a => a.appid === appid);
-        if(app) app.webhook_config = { url: body.webhook_url, enabled: body.enabled, show_hwid: body.show_hwid, show_ip: body.show_ip, show_app: body.show_app, show_expiry: body.show_expiry };
+        if(app) app.webhook_config = { url: body.webhook_url, enabled: body.enabled, show_hwid: body.show_hwid, show_app: body.show_app, show_expiry: body.show_expiry };
     }
 }
 
