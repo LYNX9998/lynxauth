@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <!-- AUTH SCREEN -->
+
     <div id="auth-view" class="auth-container">
         <div class="auth-bg-pattern"></div>
         <div class="auth-glow"></div>
@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <!-- DASHBOARD SCREEN -->
+
     <div id="dashboard-view" class="dashboard-container">
         <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMobileMenu()"></div>
         <aside class="sidebar">
@@ -87,6 +87,11 @@
                         class="fa-solid fa-chart-pie"></i> Overview</div>
                 <div class="nav-btn-side" onclick="showView('applications')" id="nav-apps"><i
                         class="fa-solid fa-layer-group"></i> Applications</div>
+
+                <div class="nav-btn-side" onclick="showView('users')" id="nav-users"><i
+                        class="fa-solid fa-users"></i> Users</div>
+
+
                 <div class="nav-btn-side" onclick="showView('integration')" id="nav-integration"><i
                         class="fa-solid fa-code"></i> Client Integration</div>
                 <div class="nav-btn-side" onclick="showView('instructions')" id="nav-instructions"><i
@@ -114,7 +119,6 @@
 
             <div id="dashboard-content" class="content-view active">
                 <div class="stats-row">
-                    <!-- NEW STAT BOXES -->
                     <div class="stat-box">
                         <div class="stat-title">Balance</div>
                         <div class="stat-num" id="stat-coins" style="color: #FFD700;">Loading...</div>
@@ -123,7 +127,7 @@
                         <div class="stat-title">Subscription</div>
                         <div class="stat-num" id="stat-sub" style="font-size:1.1rem;">Loading...</div>
                     </div>
-                    <!-- END NEW STAT BOXES -->
+ 
                     
                     <div class="stat-box">
                         <div class="stat-title">Applications</div>
@@ -147,7 +151,7 @@
                 </div>
             </div>
 
-            <!-- APPLICATIONS -->
+
             <div id="applications-content" class="content-view">
                 <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
                     <h3 style="margin:0;">Applications</h3>
@@ -169,7 +173,38 @@
                 <div id="apps-list"></div>
             </div>
 
-            <!-- CLIENT INTEGRATION -->
+
+            <div id="users-content" class="content-view">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2 style="margin:0; font-size:1.5rem;">User Management</h2>
+                    <button class="btn-primary-sm" onclick="showView('applications')"><i class="fa-solid fa-plus"></i> Create User</button>
+                </div>
+
+                <div class="user-controls-bar">
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="user-search" placeholder="Search users by name..." onkeyup="filterUsers()">
+                    </div>
+                    <div class="filter-wrapper">
+                        <select id="user-app-filter" onchange="loadUsersForSelectedApp()">
+                            <option value="" disabled selected>Select Application</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="users-table-container">
+                    <div class="users-table-header">
+                        <div style="flex:1">USER</div>
+                        <div style="flex:1">STATUS ( HWID )</div>
+                        <div style="flex:1">EXPIRY</div>
+                        <div style="width:100px; text-align:right;">ACTIONS</div>
+                    </div>
+                    <div id="users-table-body" class="users-table-body">
+                         <div class="empty-state">Select an application to view users.</div>
+                    </div>
+                </div>
+            </div>
+
             <div id="integration-content" class="content-view">
                 <h3 style="margin-bottom:15px;">Client Integration</h3>
                 <p style="color:#888; margin-bottom:20px; font-size:0.9rem;">Copy the snippet below or download the full
@@ -221,7 +256,6 @@
                 </div>
             </div>
 
-            <!-- INSTRUCTIONS -->
             <div id="instructions-content" class="content-view">
                 <h3 style="margin-bottom:20px;">Instructions</h3>
 
@@ -289,7 +323,6 @@
 
             </div>
 
-            <!-- WEBHOOKS CONTENT -->
             <div id="webhooks-content" class="content-view">
                 <div class="wh-grid-container">
                     <div class="wh-card">
@@ -393,16 +426,7 @@
         </main>
     </div>
 
-
-    <div id="manage-users-modal" class="modal-backdrop">
-        <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <h3 style="margin:0; color:white;">Users</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal()"></i>
-            </div>
-            <div id="user-list-container"></div>
-        </div>
-    </div>
+    <div id="manage-users-modal" class="modal-backdrop" style="display:none !important;"></div>
 
     <script src="script.js"></script>
 </body>
