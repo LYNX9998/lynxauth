@@ -226,7 +226,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .wh-card {
-    background: #050505; /* Very dark bg */
+    background: #050505; 
     border: 1px solid #1f1f1f;
     border-radius: 20px;
     padding: 30px;
@@ -415,4 +415,209 @@ input:checked + .slider-small:before { transform: translateX(16px); background-c
     cursor: not-allowed;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.user-controls-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-wrapper {
+    flex: 2;
+    position: relative;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+.search-wrapper i {
+    color: #555;
+}
+
+.search-wrapper input {
+    background: transparent;
+    border: none;
+    width: 100%;
+    color: #fff;
+    padding: 10px 10px;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.filter-wrapper {
+    flex: 1;
+}
+
+.filter-wrapper select {
+    width: 100%;
+    background: #111;
+    border: 1px solid #222;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+.users-table-container {
+    background: #0a0a0a;
+    border: 1px solid #1f1f1f;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.users-table-header {
+    display: flex;
+    padding: 15px 20px;
+    background: #0f0f0f;
+    border-bottom: 1px solid #1f1f1f;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.users-table-body {
+    min-height: 200px;
+}
+
+.user-list-item {
+    display: flex;
+    padding: 15px 20px;
+    border-bottom: 1px solid #1f1f1f;
+    align-items: center;
+    font-size: 0.9rem;
+}
+.user-list-item:last-child { border-bottom: none; }
+.user-list-item:hover { background: #0f0f0f; }
+
+.empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #444;
+}
+
+
+.user-controls-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.search-wrapper {
+    flex: 2;
+    position: relative;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+.search-wrapper i {
+    color: #555;
+}
+
+.search-wrapper input {
+    background: transparent;
+    border: none;
+    width: 100%;
+    color: #fff;
+    padding: 10px 10px;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.filter-wrapper {
+    flex: 1;
+}
+
+
+.filter-wrapper select {
+    width: 100%;
+    background-color: #0a0a0a; 
+    border: 1px solid #222;   
+    color: #fff;              
+    padding: 12px 16px;
+    padding-right: 40px;      
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    outline: none;           
+    cursor: pointer;
+    
+  
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 14px;
+    
+    transition: border-color 0.2s ease;
+}
+
+
+.filter-wrapper select:hover {
+    border-color: #444;
+}
+
+
+.filter-wrapper select:focus {
+    border-color: var(--primary); 
+    background-color: #0a0a0a;
+}
+
+
+.filter-wrapper select option {
+    background-color: #0a0a0a;
+    color: #fff;
+    padding: 10px;
+}
+
+.users-table-container {
+    background: #0a0a0a;
+    border: 1px solid #1f1f1f;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.users-table-header {
+    display: flex;
+    padding: 15px 20px;
+    background: #0f0f0f;
+    border-bottom: 1px solid #1f1f1f;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.users-table-body {
+    min-height: 200px;
+}
+
+.user-list-item {
+    display: flex;
+    padding: 15px 20px;
+    border-bottom: 1px solid #1f1f1f;
+    align-items: center;
+    font-size: 0.9rem;
+}
+.user-list-item:last-child { border-bottom: none; }
+.user-list-item:hover { background: #0f0f0f; }
+
+.empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #444;
 }
