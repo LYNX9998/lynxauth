@@ -284,22 +284,79 @@ async function createUser(appid) {
 }
 
 
-function loadUsersViewDropdown() {
-    const sel = document.getElementById("user-app-filter");
-    const currentVal = sel.value;
-    
-    sel.innerHTML = '<option value="" disabled selected>Select Application</option>';
-    cachedApps.forEach(app => {
-        const opt = document.createElement("option");
-        opt.value = app.appid;
-        opt.innerText = app.name;
-        sel.appendChild(opt);
-    });
 
-    if(currentVal && cachedApps.find(a => a.appid === currentVal)) {
-        sel.value = currentVal;
+function loadUsersViewDropdown() {
+    const listContainer = document.getElementById("dropdown-options-list");
+    const hiddenInput = document.getElementById("user-app-filter");
+    const triggerText = document.getElementById("dropdown-selected-text");
+    
+
+    listContainer.innerHTML = "";
+    
+    const currentVal = hiddenInput.value;
+    const currentApp = cachedApps.find(a => a.appid === currentVal);
+    
+    if(currentApp) {
+        triggerText.innerText = currentApp.name;
+        triggerText.style.color = "#fff";
+    } else {
+        triggerText.innerText = "Select Application";
+        triggerText.style.color = "#888";
     }
+
+
+    cachedApps.forEach(app => {
+        const div = document.createElement("div");
+        div.className = "dropdown-option";
+        div.innerHTML = `<span>${app.name}</span> <i class="fa-solid fa-check"></i>`;
+        
+        div.onclick = () => {
+            selectAppOption(app.appid, app.name);
+        };
+        
+        listContainer.appendChild(div);
+    });
 }
+
+
+function toggleAppDropdown() {
+    const container = document.getElementById("dropdown-options-list");
+    const trigger = document.querySelector(".dropdown-trigger");
+    
+
+    container.classList.toggle("open");
+    trigger.classList.toggle("active");
+}
+
+function selectAppOption(appid, appName) {
+
+    const textEl = document.getElementById("dropdown-selected-text");
+    textEl.innerText = appName;
+    textEl.style.color = "#fff";
+    
+
+    document.getElementById("user-app-filter").value = appid;
+    
+
+    toggleAppDropdown();
+    
+
+    loadUsersForSelectedApp();
+}
+
+
+window.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('custom-app-dropdown');
+    const container = document.getElementById("dropdown-options-list");
+    const trigger = document.querySelector(".dropdown-trigger");
+    
+    if (dropdown && !dropdown.contains(e.target)) {
+        if(container.classList.contains('open')) {
+            container.classList.remove('open');
+            trigger.classList.remove('active');
+        }
+    }
+});
 
 function openUsersModal(appid, appName) {
     showView('users');
