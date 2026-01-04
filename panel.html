@@ -88,8 +88,8 @@
                 <div class="nav-btn-side" onclick="showView('applications')" id="nav-apps"><i
                         class="fa-solid fa-layer-group"></i> Applications</div>
 
-                <div class="nav-btn-side" onclick="showView('users')" id="nav-users"><i
-                        class="fa-solid fa-users"></i> Users</div>
+                <div class="nav-btn-side" onclick="showView('users')" id="nav-users"><i class="fa-solid fa-users"></i>
+                    Users</div>
 
 
                 <div class="nav-btn-side" onclick="showView('integration')" id="nav-integration"><i
@@ -127,8 +127,8 @@
                         <div class="stat-title">Subscription</div>
                         <div class="stat-num" id="stat-sub" style="font-size:1.1rem;">Loading...</div>
                     </div>
- 
-                    
+
+
                     <div class="stat-box">
                         <div class="stat-title">Applications</div>
                         <div class="stat-num" id="stat-total-apps">0</div>
@@ -160,7 +160,8 @@
                 </div>
 
                 <div id="new-app-panel" class="panel-card" style="display:none; padding:20px;">
-                    <div style="margin-bottom:10px; font-size:0.8rem; color:#888;">Cost: <span style="color:var(--primary);">100 Coins</span> (Free for Premium)</div>
+                    <div style="margin-bottom:10px; font-size:0.8rem; color:#888;">Cost: <span
+                            style="color:var(--primary);">100 Coins</span> (Free for Premium)</div>
                     <div style="display:flex; gap:10px;">
                         <input type="text" id="app-name-input" class="auth-input" style="background:#111; margin:0;"
                             placeholder="App Name">
@@ -177,18 +178,31 @@
             <div id="users-content" class="content-view">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <h2 style="margin:0; font-size:1.5rem;">User Management</h2>
-                    <button class="btn-primary-sm" onclick="showView('applications')"><i class="fa-solid fa-plus"></i> Create User</button>
+                    <button class="btn-primary-sm" onclick="showView('applications')"><i class="fa-solid fa-plus"></i>
+                        Create User</button>
                 </div>
 
                 <div class="user-controls-bar">
                     <div class="search-wrapper">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="user-search" placeholder="Search users by name..." onkeyup="filterUsers()">
+                        <input type="text" id="user-search" placeholder="Search users by name..."
+                            onkeyup="filterUsers()">
                     </div>
                     <div class="filter-wrapper">
-                        <select id="user-app-filter" onchange="loadUsersForSelectedApp()">
-                            <option value="" disabled selected>Select Application</option>
-                        </select>
+
+                        <div class="custom-dropdown" id="custom-app-dropdown">
+ 
+                            <div class="dropdown-trigger" onclick="toggleAppDropdown()">
+                                <span id="dropdown-selected-text">Select Application</span>
+                                <i class="fa-solid fa-chevron-down arrow"></i>
+                            </div>
+
+                            <div class="dropdown-options-container" id="dropdown-options-list">
+
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="user-app-filter" value="">
                     </div>
                 </div>
 
@@ -200,7 +214,7 @@
                         <div style="width:100px; text-align:right;">ACTIONS</div>
                     </div>
                     <div id="users-table-body" class="users-table-body">
-                         <div class="empty-state">Select an application to view users.</div>
+                        <div class="empty-state">Select an application to view users.</div>
                     </div>
                 </div>
             </div>
@@ -363,7 +377,7 @@
                                     <label class="switch-small"><input type="checkbox" id="wh-show-hwid"><span
                                             class="slider-small"></span></label>
                                 </div>
-            
+
                                 <div class="wh-event-row">
                                     <span>Show License Expiry</span>
                                     <label class="switch-small"><input type="checkbox" id="wh-show-exp"><span
