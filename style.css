@@ -621,3 +621,116 @@ input:checked + .slider-small:before { transform: translateX(16px); background-c
     text-align: center;
     color: #444;
 }
+
+
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+    min-width: 200px;
+    font-family: var(--font-main);
+    user-select: none;
+}
+
+
+.dropdown-trigger {
+    background: #0a0a0a;
+    border: 1px solid #222;
+    color: #888;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.dropdown-trigger:hover {
+    border-color: #444;
+    color: #fff;
+    background: #0f0f0f;
+}
+
+.dropdown-trigger.active {
+    border-color: var(--primary); 
+    color: #fff;
+    background: #0f0f0f;
+}
+
+
+.dropdown-trigger .arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dropdown-trigger.active .arrow {
+    transform: rotate(180deg);
+}
+
+
+.dropdown-options-container {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    background: rgba(10, 10, 10, 0.9); 
+    border: 1px solid #222;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px); 
+    z-index: 100;
+    
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+
+.dropdown-options-container.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+.dropdown-option {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    color: #ccc;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+
+.dropdown-option:hover {
+    background: rgba(99, 102, 241, 0.1); 
+    color: white;
+    padding-left: 20px; 
+}
+
+.dropdown-option i {
+    font-size: 0.8rem;
+    color: var(--primary);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s;
+}
+
+.dropdown-option:hover i {
+    opacity: 1;
+    transform: scale(1);
+}
