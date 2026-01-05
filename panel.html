@@ -191,7 +191,7 @@
                     <div class="filter-wrapper">
 
                         <div class="custom-dropdown" id="custom-app-dropdown">
- 
+
                             <div class="dropdown-trigger" onclick="toggleAppDropdown()">
                                 <span id="dropdown-selected-text">Select Application</span>
                                 <i class="fa-solid fa-chevron-down arrow"></i>
@@ -441,6 +441,53 @@
     </div>
 
     <div id="manage-users-modal" class="modal-backdrop" style="display:none !important;"></div>
+
+
+    <div id="user-settings-modal" class="popup-backdrop" onclick="closeSettingsModal(event)">
+        <div class="popup-card" style="text-align:left; width: 400px; max-width:90%;">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:15px; margin-bottom:20px;">
+                <h3 id="usm-title" style="margin:0;">User Settings</h3>
+                <div onclick="document.getElementById('user-settings-modal').style.display='none'"
+                    style="cursor:pointer; color:#666;"><i class="fa-solid fa-xmark"></i></div>
+            </div>
+
+            <input type="hidden" id="usm-uid">
+
+
+            <div
+                style="background:#1a1a1a; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #333;">
+                <label style="font-size:0.75rem; color:#888; font-weight:700; display:block; margin-bottom:10px;">HWID
+                    SECURITY</label>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <span style="font-size:0.9rem; color:#eee;">Lock HWID to Device</span>
+                    <label class="switch-small">
+                        <input type="checkbox" id="usm-lock-toggle" onchange="updateLockStateFromModal()">
+                        <span class="slider-small"></span>
+                    </label>
+                </div>
+
+                <button class="btn-ghost-sm" style="width:100%; border-color:#444; color:#ccc;"
+                    onclick="resetHwidFromModal()">
+                    <i class="fa-solid fa-rotate-left"></i> Reset HWID
+                </button>
+            </div>
+
+            <div style="background:#1a1a1a; padding:15px; border-radius:8px; border:1px solid #333;">
+                <label
+                    style="font-size:0.75rem; color:#888; font-weight:700; display:block; margin-bottom:10px;">SUBSCRIPTION
+                    EXPIRY</label>
+
+                <input type="datetime-local" id="usm-date" class="auth-input"
+                    style="width:100%; margin-bottom:15px; background:#0f0f0f;">
+
+                <button class="btn-primary-sm" style="width:100%; padding:10px;" onclick="saveExpiryFromModal()">
+                    Update Date & Time
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
