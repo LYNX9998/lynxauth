@@ -390,7 +390,7 @@ function renderUsers(users) {
     const appid = document.getElementById("user-app-filter").value;
     
     if(users.length === 0) {
-        container.innerHTML = '<div class="empty-state">No users found for this application.</div>';
+        container.innerHTML = '<div class="empty-state">No users found.</div>';
         return;
     }
 
@@ -398,36 +398,112 @@ function renderUsers(users) {
     
     users.forEach(u => {
         let datePart = "Never";
-        let timePart = "";
-        
-        if(u.expires_at) {
-            const parts = u.expires_at.split('T');
-            datePart = parts[0];
-            if(parts.length > 1) {
-                timePart = parts[1].split('.')[0];
-            }
-        }
+        if(u.expires_at) datePart = u.expires_at.split('T')[0];
 
-
-        const hwidDisplay = u.hwid ? u.hwid : "None";
-        const hwidColor = u.hwid ? "#aaa" : "#555";
+        const isLocked = u.hwid_locked !== false; 
+        const hwidDisplay = u.hwid ? "Linked" : "Not Linked";
+        const hwidColor = u.hwid ? "#10b981" : "#666";
 
         const row = document.createElement("div");
         row.className = "user-list-item";
         row.innerHTML = `
-            <div style="flex:1; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:10px;">${u.username}</div>
-            <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:10px;">
-                <span style="color:${hwidColor}; font-size:0.75rem; font-family:var(--font-code);" title="${hwidDisplay}">${hwidDisplay}</span>
+            <div style="flex:1; font-weight:500; display:flex; gap:8px; align-items:center;">
+                ${u.username}
+                ${isLocked ? '<i class="fa-solid fa-lock" style="font-size:0.7rem; color:var(--primary);" title="Secure"></i>' : '<i class="fa-solid fa-lock-open" style="font-size:0.7rem; color:#666;" title="Unlocked"></i>'}
             </div>
-            <div style="flex:1; font-size:0.85rem; color:#888;">${datePart} <span style="color:#6366f1">${timePart}</span></div>
-            <div style="width:100px; text-align:right;">
-                <button class="btn-danger-sm" style="padding:4px 8px;" onclick="deleteUser('${u.id}', '${appid}', '')">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+            
+            <div style="flex:1; font-size:0.8rem;">
+                <span style="color:${hwidColor};">● ${hwidDisplay}</span>
+            </div>
+            
+            <div style="flex:1; font-size:0.85rem; color:#888;">${datePart}</div>
+            
+            <div style="width:120px; text-align:right;">
+                <div class="action-btn-wrapper action-container">
+                    
+                    <!-- 1. Three Dots (Opens Central Modal) -->
+                    <button class="btn-icon" onclick="openSettingsModal('${u.id}', '${u.username}', '${u.expires_at || ''}', ${isLocked})">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+
+                    <!-- 2. Separate Delete Button -->
+                    <button class="btn-danger-sm" style="padding:6px 10px;" onclick="deleteUser('${u.id}', '${appid}', '')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+
+                </div>
             </div>
         `;
         container.appendChild(row);
     });
+}
+
+
+function toggleMenu(uid, event) {
+    event.stopPropagation();
+    document.querySelectorAll('.action-menu').forEach(el => {
+        if(el.id !== `menu-${uid}`) el.classList.remove('show');
+    });
+    const menu = document.getElementById(`menu-${uid}`);
+    menu.classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.action-menu') && !e.target.closest('.btn-icon')) {
+        document.querySelectorAll('.action-menu').forEach(el => el.classList.remove('show'));
+    }
+});
+
+async function toggleHwidLock(uid, newState) {
+    try {
+        await apiCall("/users/action", { 
+            user_id: uid, 
+            action: "toggle_lock", 
+            lock_state: newState 
+        });
+
+        loadUsersForSelectedApp(); 
+    } catch (e) {
+        showPopup("Error", "Failed to toggle lock.");
+        loadUsersForSelectedApp(); 
+    }
+}
+
+async function resetHWID(uid) {
+    if(!confirm("Reset HWID for this user?")) return;
+    try {
+        await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
+        showPopup("Success", "HWID Reset.");
+        loadUsersForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed.");
+    }
+}
+
+function openTimeModal(uid) {
+    document.getElementById("time-user-id").value = uid;
+    document.getElementById("time-modal").style.display = "flex";
+    document.getElementById(`menu-${uid}`).classList.remove('show');
+}
+
+function closeTimeModal(e) {
+    if (e.target.id === "time-modal") document.getElementById("time-modal").style.display = "none";
+}
+
+async function submitTimeUpdate() {
+    const uid = document.getElementById("time-user-id").value;
+    const days = parseInt(document.getElementById("time-input").value);
+    
+    if(isNaN(days)) return showPopup("Error", "Invalid days.");
+
+    try {
+        await apiCall("/users/action", { user_id: uid, action: "add_time", value: days });
+        document.getElementById("time-modal").style.display = "none";
+        showPopup("Success", "Time updated.");
+        loadUsersForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to update time.");
+    }
 }
 
 function filterUsers() {
@@ -495,7 +571,7 @@ async function saveWebhook() {
     } catch (e) {}
 }
 
-// --- INTEGRATION ---
+
 const CODE_CS = `using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
@@ -666,5 +742,162 @@ function closePopup() {
 function closePopupBackground(event) {
     if (event.target.id === "popup-overlay") {
         closePopup();
+    }
+}
+
+
+function toggleMenu(uid, event) {
+    event.stopPropagation();
+
+    document.querySelectorAll('.action-menu').forEach(el => {
+        if(el.id !== `menu-${uid}`) el.classList.remove('show');
+    });
+    
+    const menu = document.getElementById(`menu-${uid}`);
+    menu.classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.action-btn-wrapper')) {
+        document.querySelectorAll('.action-menu').forEach(el => el.classList.remove('show'));
+    }
+});
+
+async function toggleHwidLock(uid, newState) {
+    try {
+        await apiCall("/users/action", { 
+            user_id: uid, 
+            action: "toggle_lock", 
+            lock_state: newState 
+        });
+        showPopup("Success", newState ? "HWID Locked." : "HWID Unlocked.");
+        loadUsersForSelectedApp(); 
+    } catch (e) {
+        showPopup("Error", "Failed to toggle lock.");
+    }
+}
+
+
+async function resetHWID(uid) {
+    if(!confirm("Are you sure you want to reset the HWID for this user?")) return;
+    try {
+        await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
+        showPopup("Success", "HWID has been reset.");
+        loadUsersForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to reset HWID.");
+    }
+}
+
+
+function openTimeModal(uid) {
+    document.getElementById("time-user-id").value = uid;
+    document.getElementById("time-modal").style.display = "flex";
+    document.getElementById(`menu-${uid}`).classList.remove('show');
+}
+
+function closeTimeModal(e) {
+    if (e.target.id === "time-modal") {
+        document.getElementById("time-modal").style.display = "none";
+    }
+}
+
+async function submitTimeUpdate() {
+    const uid = document.getElementById("time-user-id").value;
+    const days = parseInt(document.getElementById("time-input").value);
+    
+    if(isNaN(days)) return showPopup("Error", "Invalid days.");
+
+    try {
+        await apiCall("/users/action", { 
+            user_id: uid, 
+            action: "add_time", 
+            value: days 
+        });
+        document.getElementById("time-modal").style.display = "none";
+        showPopup("Success", "Subscription updated.");
+        loadUsersForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to update time.");
+    }
+}
+
+
+function openSettingsModal(uid, username, expiresAt, isLocked) {
+    document.getElementById("usm-uid").value = uid;
+    document.getElementById("usm-title").innerText = "Settings: " + username;
+    
+
+    document.getElementById("usm-lock-toggle").checked = isLocked;
+    
+
+    if(expiresAt) {
+
+        let fmtDate = expiresAt;
+        if(expiresAt.length > 16) fmtDate = expiresAt.substring(0, 16);
+        document.getElementById("usm-date").value = fmtDate;
+    } else {
+        document.getElementById("usm-date").value = "";
+    }
+
+    document.getElementById("user-settings-modal").style.display = "flex";
+}
+
+function closeSettingsModal(e) {
+    if (e.target.id === "user-settings-modal") {
+        document.getElementById("user-settings-modal").style.display = "none";
+    }
+}
+
+
+async function updateLockStateFromModal() {
+    const uid = document.getElementById("usm-uid").value;
+    const isLocked = document.getElementById("usm-lock-toggle").checked;
+
+    try {
+        await apiCall("/users/action", { 
+            user_id: uid, 
+            action: "toggle_lock", 
+            lock_state: isLocked 
+        });
+
+        loadUsersForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to update lock state.");
+    }
+}
+
+
+async function resetHwidFromModal() {
+    const uid = document.getElementById("usm-uid").value;
+    if(!confirm("Are you sure you want to reset HWID?")) return;
+
+    try {
+        await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
+        showPopup("Success", "HWID has been reset.");
+        loadUsersForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to reset HWID.");
+    }
+}
+
+
+async function saveExpiryFromModal() {
+    const uid = document.getElementById("usm-uid").value;
+    const dateStr = document.getElementById("usm-date").value; 
+    
+    if(!dateStr) return showPopup("Error", "Please select a date.");
+
+    try {
+        await apiCall("/users/action", { 
+            user_id: uid, 
+            action: "set_expiry", 
+            expire_str: dateStr 
+        });
+        showPopup("Success", "Expiration date updated.");
+        loadUsersForSelectedApp();
+        document.getElementById("user-settings-modal").style.display = "none";
+    } catch (e) {
+        showPopup("Error", "Failed to update date.");
     }
 }
