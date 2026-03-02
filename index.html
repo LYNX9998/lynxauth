@@ -786,6 +786,67 @@
                 font-size: 1.5rem;
             }
         }
+
+        /* review cards styling */
+        .reviews-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .review-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+        }
+
+        .reviewer-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reviewer-photo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .reviewer-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #111;
+        }
+
+        .reviewer-email {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .rating {
+            color: #FFD700;
+        }
+
+        .review-text {
+            color: #333;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 
@@ -937,6 +998,100 @@
             <div class="collab-x">X</div>
 
             <img src="Assets/COLLAB.png" alt="Collab" class="partner-img">
+        </div>
+    </section>
+
+    <section class="reviews-section">
+        <div class="section-header">
+            <h2>Our Reviews</h2>
+            <p>What our "Users" are saying</p>
+        </div>
+        <div class="reviews-grid">
+            <div class="review-card">
+                <div class="reviewer-top">
+                    <img src="https://cdn.discordapp.com/avatars/1212429667353763953/cb30baf7e0c5a291817f32d9b850c25a.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">Obito X cheats</div>
+                        <div class="reviewer-email">Obito.modz@gmail.com</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="review-text">"This Auth system is super cool and way better secure as compared to other auth i ever used."</p>
+            </div>
+
+            <div class="review-card">
+                <div class="reviewer-top">
+                    <img src="https://cdn.discordapp.com/avatars/1342442845797355574/b95692ac76dc4264512d278433db0b2a.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">Titan editz</div>
+                        <div class="reviewer-email">Titaneditz99@gmail.com</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="review-text">"Great experience! used frequently in my cheats and it's super secure + fast loved it."</p>
+            </div>
+
+            <div class="review-card">
+                <div class="reviewer-top">
+                    <img src="https://cdn.discordapp.com/avatars/1459655728628240628/f99e7cf5f2c44f0164353edc7888f725.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">Krish x 99</div>
+                        <div class="reviewer-email">krishxcheats88@gmail.com</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="review-text">"Absolutely love it! million stars for reliability and performance. 👍"</p>
+            </div>
+
+            <div class="review-card">
+                <div class="reviewer-top">
+                    <img src="https://cdn.discordapp.com/avatars/1154983642016264222/687b3fe241642cf3c5fcce1843f26647.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">Nxr Ovi</div>
+                        <div class="reviewer-email">ovicheats@gmail.com</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="review-text">"I am very happy toh use the auth source .. everyone you can buy all item."</p>
+            </div>
+
+            <div class="review-card">
+                <div class="reviewer-top">
+                    <img src="https://cdn.discordapp.com/avatars/1441124184880054362/01c12c6ebc3241cdbd03b88f99b26466.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">lord sk</div>
+                        <div class="reviewer-email">aizencheats87@gmail.com</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <p class="review-text">"I’ve been using Lynx Auth these days, and I’m planning to use my buddy’s auth for all my applications. Please continue supporting my buddy—he’s working really hard to provide quality materials at affordable prices without compromising on quality. Also, the auth has no limits for premium users."</p>
+            </div>
+
+            <div class="review-card">
+                <div class="reviewer-top">
+                    <img src="https://cdn.discordapp.com/avatars/1469645366893744181/c89039d7f01cf9cdbc9c644ca05ff0ff.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">billubadmosh</div>
+                        <div class="reviewer-email">the.topgamer@gmail.com</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <p class="review-text">"I purchased lynxauth backend src today from @ʟʏɴx  ! really it was amazing . auth is fast and it have sexy ui 100% recommend to others"</p>
+            </div>
+
+            
         </div>
     </section>
 
