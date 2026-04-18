@@ -803,10 +803,21 @@ function closeTimeModal(e) {
 }
 
 // Create User Modal Logic
-function openCreateUserModal() {
+async function openCreateUserModal() {
     const modal = document.getElementById("create-user-modal");
     const select = document.getElementById("cum-appid");
     
+    // Ensure applications are loaded
+    if (!cachedApps || cachedApps.length === 0) {
+        select.innerHTML = '<option value="" disabled selected>Syncing apps...</option>';
+        try {
+            const data = await apiCall("/apps/list", { ownerid: currentOwnerId });
+            cachedApps = data.apps;
+        } catch (e) {
+            return showPopup("Error", "Could not load applications. Please check your connection.");
+        }
+    }
+
     // Populate dropdown with latest cached apps
     select.innerHTML = '<option value="" disabled selected>Select an App...</option>';
     cachedApps.forEach(app => {
