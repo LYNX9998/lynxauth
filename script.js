@@ -210,6 +210,7 @@ async function loadApps(updateStats = false) {
         cachedApps.forEach(app => {
             const div = document.createElement("div");
             div.className = "app-row";
+            div.id = `app-row-${app.appid}`;
             div.innerHTML = `
                 <div class="app-row-header" onclick="this.parentElement.classList.toggle('expanded')">
                     <div class="app-title"><i class="fa-solid fa-cube"></i> ${app.name}</div>
@@ -226,7 +227,7 @@ async function loadApps(updateStats = false) {
                     <div style="display:flex; gap:10px; margin-bottom:20px; align-items:center; flex-wrap:wrap;">
                         <input id="u-name-${app.appid}" class="auth-input" style="margin:0; background:#111; flex:1; min-width:120px;" placeholder="Username">
                         <input id="u-pass-${app.appid}" class="auth-input" style="margin:0; background:#111; flex:1; min-width:120px;" placeholder="Password">
-                        <input type="datetime-local" id="u-exp-${app.appid}" class="auth-input" style="margin:0; background:#111; color:#fff; flex:1; min-width:160px;">
+                        <input type="datetime-local" id="u-exp-${app.appid}" class="auth-input date-picker-fix" style="margin:0; background:#111; color:#fff; flex:1; min-width:160px;">
                         <button class="btn-primary-sm" onclick="createUser('${app.appid}')">Create User</button>
                     </div>
                     <div style="display:flex; justify-content:space-between; border-top:1px solid #222; padding-top:15px;">
@@ -802,86 +803,27 @@ function closeTimeModal(e) {
     }
 }
 
-// Create User Modal Logic
-async function openCreateUserModal() {
-    const modal = document.getElementById("create-user-modal");
-    const select = document.getElementById("cum-appid");
+// Create User Redirect Logic
+function handleCreateUserRedirect() {
+    const appid = document.getElementById("user-app-filter").value;
+    showView('applications');
     
-    // Ensure applications are loaded
-    if (!cachedApps || cachedApps.length === 0) {
-        select.innerHTML = '<option value="" disabled selected>Syncing apps...</option>';
-        try {
-            const data = await apiCall("/apps/list", { ownerid: currentOwnerId });
-            cachedApps = data.apps;
-        } catch (e) {
-            return showPopup("Error", "Could not load applications. Please check your connection.");
-        }
-    }
-
-    // Populate dropdown with latest cached apps
-    select.innerHTML = '<option value="" disabled selected>Select an App...</option>';
-    cachedApps.forEach(app => {
-        const opt = document.createElement("option");
-        opt.value = app.appid;
-        opt.innerText = app.name;
-        select.appendChild(opt);
-    });
-
-    modal.style.display = "flex";
-}
-
-function closeCreateUserModal(event) {
-    if (event.target.id === "create-user-modal") {
-        document.getElementById("create-user-modal").style.display = "none";
-    }
-}
-
-async function submitCreateUserFromModal() {
-    const appid = document.getElementById("cum-appid").value;
-    const username = document.getElementById("cum-username").value;
-    const password = document.getElementById("cum-password").value;
-    const expiry = document.getElementById("cum-expiry").value;
-    const days = document.getElementById("cum-days").value || 0;
-    const btn = document.getElementById("cum-btn");
-
-    if (!appid) return showPopup("Error", "Please select an application.");
-    if (!username || !password) return showPopup("Error", "Username and Password are required.");
-
-    const originalText = btn.innerText;
-    btn.innerText = "Creating...";
-    btn.disabled = true;
-
-    const payload = {
-        ownerid: currentOwnerId,
-        appid: appid,
-        username: username,
-        password: password,
-        days: parseInt(days)
-    };
-
-    if (expiry) payload.expire_str = expiry;
-
-    try {
-        await apiCall("/users/create", payload);
-        showPopup("Success", `User ${username} created!`);
-        
-        // Reset and close
-        document.getElementById("cum-username").value = "";
-        document.getElementById("cum-password").value = "";
-        document.getElementById("cum-expiry").value = "";
-        document.getElementById("cum-days").value = "0";
-        document.getElementById("create-user-modal").style.display = "none";
-
-        // If we are currently on the users view and filtering for this app, refresh the list
-        const currentFilter = document.getElementById("user-app-filter").value;
-        if (currentFilter === appid) {
-            loadUsersForSelectedApp();
-        }
-    } catch (e) {
-        // Error is handled by apiCall popup
-    } finally {
-        btn.innerText = originalText;
-        btn.disabled = false;
+    if (appid) {
+        // Give time for view to switch and rows to render if needed
+        setTimeout(() => {
+            const row = document.getElementById(`app-row-${appid}`);
+            if (row) {
+                // Close others
+                document.querySelectorAll('.app-row').forEach(r => r.classList.remove('expanded'));
+                // Expand this one
+                row.classList.add('expanded');
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Focus the username input
+                const usernameInput = document.getElementById(`u-name-${appid}`);
+                if (usernameInput) usernameInput.focus();
+            }
+        }, 150);
     }
 }
 
