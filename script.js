@@ -830,6 +830,7 @@ async function submitCreateUserFromModal() {
     const username = document.getElementById("cum-username").value;
     const password = document.getElementById("cum-password").value;
     const expiry = document.getElementById("cum-expiry").value;
+    const days = document.getElementById("cum-days").value || 0;
     const btn = document.getElementById("cum-btn");
 
     if (!appid) return showPopup("Error", "Please select an application.");
@@ -844,7 +845,7 @@ async function submitCreateUserFromModal() {
         appid: appid,
         username: username,
         password: password,
-        days: 0
+        days: parseInt(days)
     };
 
     if (expiry) payload.expire_str = expiry;
@@ -857,6 +858,7 @@ async function submitCreateUserFromModal() {
         document.getElementById("cum-username").value = "";
         document.getElementById("cum-password").value = "";
         document.getElementById("cum-expiry").value = "";
+        document.getElementById("cum-days").value = "0";
         document.getElementById("create-user-modal").style.display = "none";
 
         // If we are currently on the users view and filtering for this app, refresh the list
@@ -869,9 +871,6 @@ async function submitCreateUserFromModal() {
     } finally {
         btn.innerText = originalText;
         btn.disabled = false;
-    }
-}
-        document.getElementById("time-modal").style.display = "none";
     }
 }
 
