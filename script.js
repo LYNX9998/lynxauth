@@ -22,6 +22,7 @@ const API_URL = "https://api.lynxauth.qzz.io/";
 let currentOwnerId = null;
 let currentUserEmail = null;
 let cachedApps = [];
+let pendingAppRedirect = null;
 let currentLang = 'cs';
 let currentAppUsers = [];
 
@@ -238,6 +239,22 @@ async function loadApps(updateStats = false) {
             `;
             listContainer.appendChild(div);
         });
+
+        // Handle pending redirection from Users page
+        if (pendingAppRedirect) {
+            const row = document.getElementById(`app-row-${pendingAppRedirect}`);
+            if (row) {
+                // Ensure all others are closed
+                document.querySelectorAll('.app-row').forEach(r => r.classList.remove('expanded'));
+                // Open our target
+                row.classList.add('expanded');
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                const input = document.getElementById(`u-name-${pendingAppRedirect}`);
+                if (input) input.focus();
+            }
+            pendingAppRedirect = null; // Clear state
+        }
     } catch (e) {
         console.error(e);
     }
@@ -803,27 +820,85 @@ function closeTimeModal(e) {
     }
 }
 
-// Create User Redirect Logic
-function handleCreateUserRedirect() {
-    const appid = document.getElementById("user-app-filter").value;
-    showView('applications');
+// Create User Modal Logic
+async function openCreateUserModal() {
+    const modal = document.getElementById("create-user-modal");
+    const select = document.getElementById("cum-appid");
     
-    if (appid) {
-        // Give time for view to switch and rows to render if needed
-        setTimeout(() => {
-            const row = document.getElementById(`app-row-${appid}`);
-            if (row) {
-                // Close others
-                document.querySelectorAll('.app-row').forEach(r => r.classList.remove('expanded'));
-                // Expand this one
-                row.classList.add('expanded');
-                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Focus the username input
-                const usernameInput = document.getElementById(`u-name-${appid}`);
-                if (usernameInput) usernameInput.focus();
-            }
-        }, 150);
+    // Pre-select the app if one is already chosen in the filter
+    const activeApp = document.getElementById("user-app-filter").value;
+    
+    if (!cachedApps || cachedApps.length === 0) {
+        select.innerHTML = '<option value="" disabled selected>Syncing apps...</option>';
+        try {
+            const data = await apiCall("/apps/list", { ownerid: currentOwnerId });
+            cachedApps = data.apps;
+        } catch (e) {
+            return showPopup("Error", "Could not sync apps.");
+        }
+    }
+
+    select.innerHTML = '<option value="" disabled selected>Select an App...</option>';
+    cachedApps.forEach(app => {
+        const opt = document.createElement("option");
+        opt.value = app.appid;
+        opt.innerText = app.name;
+        if (app.appid === activeApp) opt.selected = true;
+        select.appendChild(opt);
+    });
+
+    modal.style.display = "flex";
+}
+
+function closeCreateUserModal(event) {
+    if (event.target.id === "create-user-modal" || !event) {
+        document.getElementById("create-user-modal").style.display = "none";
+    }
+}
+
+async function submitCreateUserFromModal() {
+    const appid = document.getElementById("cum-appid").value;
+    const username = document.getElementById("cum-username").value;
+    const password = document.getElementById("cum-password").value;
+    const expiry = document.getElementById("cum-expiry").value;
+    const days = document.getElementById("cum-days").value || 0;
+    const btn = document.getElementById("cum-btn");
+
+    if (!appid) return showPopup("Error", "Please select an app.");
+    if (!username || !password) return showPopup("Error", "Username & Password required.");
+
+    const originalText = btn.innerText;
+    btn.innerText = "Creating...";
+    btn.disabled = true;
+
+    const payload = {
+        ownerid: currentOwnerId,
+        appid: appid,
+        username: username,
+        password: password,
+        days: parseInt(days)
+    };
+
+    if (expiry) payload.expire_str = expiry;
+
+    try {
+        await apiCall("/users/create", payload);
+        showPopup("Success", `User ${username} created!`);
+        
+        document.getElementById("cum-username").value = "";
+        document.getElementById("cum-password").value = "";
+        document.getElementById("cum-expiry").value = "";
+        document.getElementById("cum-days").value = "0";
+        document.getElementById("create-user-modal").style.display = "none";
+
+        const currentFilter = document.getElementById("user-app-filter").value;
+        if (currentFilter === appid) {
+            loadUsersForSelectedApp();
+        }
+    } catch (e) {
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
 }
 
