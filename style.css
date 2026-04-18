@@ -168,23 +168,30 @@ body {
     background: rgba(0, 0, 0, 0.6);
 }
 
-/* Fix for Calendar Icon in Dark Mode */
-.date-picker-fix::-webkit-calendar-picker-indicator {
-    filter: invert(1);
+/* GLOBAL HIGH-VISIBILITY DATE PICKER FIX */
+input[type="datetime-local"] {
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(100%) !important;
     cursor: pointer;
     opacity: 1 !important;
-    background-size: contain;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    transition: transform 0.2s ease;
+    background-size: contain;
+    z-index: 10;
 }
 
-.date-picker-fix::-webkit-calendar-picker-indicator:hover {
-    transform: scale(1.1);
-}
-
-.date-picker-fix {
-    padding-right: 15px !important;
+/* Ensure padding doesn't hide the icon */
+.auth-input.date-picker-fix {
+    padding-right: 40px !important;
 }
 
 .modal-field {
