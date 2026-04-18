@@ -515,10 +515,15 @@
                 </div>
             </div>
 
-            <div class="modal-field">
-                <label>Subscription Expiry</label>
-                <input type="datetime-local" id="cum-expiry" class="auth-input" style="width:100%; background:#0f0f0f; padding-left:15px;">
-                <div style="font-size:0.75rem; color:#555; margin-top:8px;">Leave blank for default session.</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;" class="modal-field">
+                <div>
+                    <label>Subscription Expiry</label>
+                    <input type="datetime-local" id="cum-expiry" class="auth-input" style="width:100%; background:#0f0f0f; padding-left:15px;">
+                </div>
+                <div>
+                    <label>Sub Days (Optional)</label>
+                    <input type="number" id="cum-days" class="auth-input" style="width:100%; background:#0f0f0f; padding-left:15px;" placeholder="e.g. 30" value="0">
+                </div>
             </div>
 
             <button class="btn-primary-sm" style="width:100%; padding:14px; font-size:1rem; margin-top:10px;" id="cum-btn" onclick="submitCreateUserFromModal()">
