@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LYNX | Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Vercel / Linear inspired minimalistic dark palette */
+            --bg-base: #000000;
+            --bg-surface: #0a0a0a;
+            --bg-sidebar: #010101;
+            --bg-hover: #161616;
+            
+            --text-primary: #ededed;
+            --text-secondary: #888888;
+            --text-accent: #ffffff;
+            
+            --border-subtle: #222222;
+            --border-hover: #333333;
+            
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --blue: #3b82f6;
+
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-code: 'JetBrains Mono', Consolas, Monaco, monospace;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* WebKit (Chrome, Safari, newer Edge) */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* SIDEBAR (Minimalist) */
+        aside {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            padding: 40px 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand {
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text-accent);
+            padding: 0 32px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand i { color: var(--text-primary); font-size: 1.1rem; }
+
+        .nav-group { margin-bottom: 30px; }
+        .nav-group-title {
+            padding: 0 32px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 8px 32px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.2s, background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 2px solid transparent;
+        }
+
+        .nav-item i { width: 14px; text-align: center; }
+        .nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .nav-item.active {
+            color: var(--text-primary);
+            border-left-color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+            font-weight: 600;
+        }
+
+        /* MAIN CONTENT (Clean reading space) */
+        main {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .hero-section {
+            padding-bottom: 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        h1 { 
+            font-size: 2.2rem; 
+            font-weight: 700; 
+            letter-spacing: -1px; 
+            margin-bottom: 15px; 
+            color: var(--text-accent);
+        }
+        
+        h2 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            color: var(--text-accent); 
+            margin: 40px 0 20px 0; 
+            letter-spacing: -0.5px;
+        }
+        
+        h3 { 
+            font-size: 1.05rem; 
+            font-weight: 600; 
+            color: var(--text-accent); 
+            margin: 25px 0 10px 0; 
+        }
+
+        p { 
+            color: var(--text-secondary); 
+            line-height: 1.6; 
+            margin-bottom: 20px; 
+            font-size: 0.95rem; 
+        }
+
+        .content-section {
+            display: none;
+            max-width: 850px;
+            animation: fadeIn 0.4s ease;
+        }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CODE BLOCKS (Flat and precise) */
+        .code-block {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .code-lang {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-hover); }
+
+        pre {
+            font-family: var(--font-code);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .function { color: #d2a8ff; }
+        .comment { color: #8b949e; }
+
+        /* ENDPOINT CARDS (Flat structure) */
+        .endpoint-card { margin-bottom: 40px; }
+
+        .endpoint-url {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            background: var(--bg-surface);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .endpoint-badge {
+            background: var(--bg-base);
+            border: 1px solid var(--border-hover);
+            color: var(--text-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* TABLES (Minimal horizontal borders) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+        }
+
+        th { color: var(--text-primary); font-weight: 500; }
+        td { color: var(--text-secondary); }
+        td code, p code { 
+            background: var(--bg-surface); 
+            border: 1px solid var(--border-subtle);
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-family: var(--font-code); 
+            font-size: 0.8rem; 
+            color: var(--text-primary); 
+        }
+
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        li { color: var(--text-secondary); line-height: 1.6; margin-bottom: 8px; font-size: 0.95rem; }
+
+        /* WARNING/INFO ALERTS (Subtle outlines) */
+        .alert {
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+            display: flex;
+            gap: 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .alert-warning { border-left: 2px solid var(--warning); }
+        .alert-info { border-left: 2px solid var(--blue); }
+
+        .alert i { font-size: 1.1rem; margin-top: 2px; }
+        .alert-warning i { color: var(--warning); }
+        .alert-info i { color: var(--blue); }
+
+        .alert-content p { margin: 0; font-size: 0.9rem; }
+        .alert-content strong { display: block; margin-bottom: 4px; color: var(--text-accent); font-weight: 600; font-size: 0.9rem; }
+
+        @media(max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+            aside { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-subtle); padding: 20px 0; flex-shrink: 0; position: static; transition: 0.3s; }
+            .brand { margin-bottom: 0px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+            .nav-group { display: none; }
+            aside.open .nav-group { display: block; margin-top: 25px; }
+            aside.open .brand { margin-bottom: 25px; }
+            #mobile-toggle { display: block !important; font-size: 1.5rem; color: var(--text-primary); }
+            .nav-group-title { padding: 0 20px; }
+            .nav-item { padding: 10px 20px; }
+            main { padding: 30px 20px; flex-shrink: 0; overflow-y: visible; }
+            h1 { font-size: 1.8rem; }
+            .hero-section { margin-bottom: 30px; padding-bottom: 30px; }
+            .content-section { max-width: 100%; }
+            .endpoint-url { flex-direction: column; align-items: flex-start; gap: 8px; }
+            table, th, td { display: block; width: 100%; border: none; }
+            th { border-bottom: 1px solid var(--border-subtle); }
+            td { padding: 8px 0; border-bottom: 1px dotted var(--border-subtle); }
+            tr { margin-bottom: 20px; display: block; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;}
+            pre { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside id="docs-sidebar">
+        <div class="brand">
+            <div><i class="fa-solid fa-layer-group"></i> LYNX Developer</div>
+            <i class="fa-solid fa-bars" id="mobile-toggle" onclick="document.getElementById('docs-sidebar').classList.toggle('open')" style="display:none; cursor:pointer;"></i>
+        </div>
+        
+        <div class="nav-group">
+            <div class="nav-group-title">Overview</div>
+            <div class="nav-item active" onclick="switchSection('intro', this)"><i class="fa-solid fa-rocket"></i> Introduction</div>
+            <div class="nav-item" onclick="switchSection('auth', this)"><i class="fa-solid fa-shield"></i> Security Concepts</div>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">API Reference</div>
+            <div class="nav-item" onclick="switchSection('api-login', this)"><i class="fa-solid fa-code"></i> Client Login</div>
+            <div class="nav-item" onclick="switchSection('api-users', this)"><i class="fa-solid fa-users"></i> Users</div>
+            <div class="nav-item" onclick="switchSection('api-webhooks', this)"><i class="fa-brands fa-discord"></i> Webhooks</div>
+        </div>
+        
+        <div class="nav-group">
+            <div class="nav-group-title">Administration</div>
+            <div class="nav-item" onclick="switchSection('admin', this)"><i class="fa-solid fa-lock"></i> God Mode</div>
+        </div>
+    </aside>
+
+    <main>
+        <!-- INTRODUCTION -->
+        <div id="intro" class="content-section active">
+            <div class="hero-section">
+                <h1>Welcome to LYNX Documentation</h1>
+                <p>The developer guide for integrating next-generation authentication architecture into your remote clients. Built for exact scale and unparalleled security.</p>
+            </div>
+
+            <h2>Architecture Overview</h2>
+            <p>LYNX provides a secure backend for managing isolated applications, hardware-id (HWID) locked users, and real-time Discord webhooks. This documentation outlines the exact REST endpoints.</p>
+
+            <div class="alert alert-info">
+                <i class="fa-solid fa-circle-info"></i>
+                <div class="alert-content">
+                    <strong>Base Domain Configuration</strong>
+                    <p>All API endpoints should route to your centralized backend instance. In these examples, the host points directly to <code>https://api.lynxauth.qzz.io</code>.</p>
+                </div>
+            </div>
+
+            <h3>Core Mechanics</h3>
+            <ul>
+                <li><b>Immutable Authorization:</b> Native HWID binding prevents simultaneous footprint execution.</li>
+                <li><b>Instant Auditing:</b> Discrete Discord alerts trace valid user logins universally.</li>
+                <li><b>Stateless Operation:</b> JWT-less architecture with rapid remote lockouts.</li>
+            </ul>
+        </div>
+
+        <!-- AUTHENTICATION -->
+        <div id="auth" class="content-section">
+            <div class="hero-section">
+                <h1>Authentication Architecture</h1>
+                <p>Understanding identity resolution and keys inside LYNX.</p>
+            </div>
+
+            <h2>Security Isolation</h2>
+            <p>We divide environment credentials explicitly into two discrete spheres:</p>
+            
+            <div class="endpoint-card">
+                <h3>1. Master Access (Dashboard & Admin)</h3>
+                <p>Operations targeting global application drops and user allocations require your <code>OwnerID</code>. Think of this as the root system key generated during Firebase authentication.</p>
+            </div>
+
+            <div class="endpoint-card">
+                <h3>2. Executable Access (Client Bins)</h3>
+                <p>Compiled software (C#, Python, DLLs) strictly relies on an application-level <code>App Secret</code>. An App Secret cannot query your wallet data, nor can it obliterate databases.</p>
+            </div>
+
+            <div class="alert alert-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div class="alert-content">
+                    <strong>Avoid Hardcoding Master Secrets</strong>
+                    <p>Never expose your <code>OwnerID</code> within redistributable client binaries! Only compile the <code>App Secret</code> inside your executable.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- API: CLIENT LOGIN -->
+        <div id="api-login" class="content-section">
+            <div class="hero-section">
+                <h1>Client Login</h1>
+                <p>Authenticate an end-user from remote software boundaries.</p>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-url">
+                    <span class="endpoint-badge">POST</span>
+                    <span style="color: var(--text-accent);">/api/1.0/user_login</span>
+                </div>
+                <p>Evaluates a given username, password, and HWID fingerprint against your exact application tier.</p>
+                
+                <h3>Request Payload (JSON)</h3>
+                <table>
+                    <tr><th>Parameter</th><th>Type</th><th>Descriptor</th></tr>
+                    <tr><td><code>ownerid</code></td><td>String</td><td>Your global Seller ID reference</td></tr>
+                    <tr><td><code>app_secret</code></td><td>String</td><td>The isolated secret token for your specific App</td></tr>
+                    <tr><td><code>username</code></td><td>String</td><td>The provisioned user identity</td></tr>
+                    <tr><td><code>password</code></td><td>String</td><td>The provisioned user password</td></tr>
+                    <tr><td><code>hwid</code></td><td>String</td><td>The local physical machine digest (ex. SHA256)</td></tr>
+                </table>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Python (lynx.py)</span>
+                        <div class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText); const t = this.innerText; this.innerHTML = '<i class=\'fa-solid fa-check\'></i> Copied!'; setTimeout(()=>this.innerHTML=t, 2000);"><i class="fa-regular fa-copy"></i> Copy</div>
+                    </div>
+<pre>
+<span class="keyword">import</span> requests
+<span class="keyword">import</span> platform
+<span class="keyword">import</span> hashlib
+
+<span class="keyword">class</span> LynxAuthAPI:
+    <span class="keyword">def</span> __init__(self, ownerid, secret, api_url=<span class="string">"https://api.lynxauth.qzz.io/"</span>):
+        <span class="keyword">if</span> api_url.endswith(<span class="string">"/"</span>):
+            api_url = api_url[:-1]
+        
+        self.ownerid = ownerid
+        self.secret = secret
+        self.api_url = <span class="string">f"https://api.lynxauth.qzz.io/"</span>
+
+    <span class="keyword">def</span> get_hwid(self):
+        <span class="keyword">return</span> hashlib.sha256(<span class="string">f"{platform.node()}-{platform.processor()}"</span>.encode()).hexdigest()
+
+    <span class="keyword">def</span> login(self, username, password):
+        payload = {
+            <span class="string">"ownerid"</span>: self.ownerid,
+            <span class="string">"app_secret"</span>: self.secret,
+            <span class="string">"username"</span>: username,
+            <span class="string">"password"</span>: password,
+            <span class="string">"hwid"</span>: self.get_hwid()
+        }
+        <span class="keyword">try</span>:
+            response = requests.post(self.api_url, json=payload)
+            <span class="keyword">return</span> response.json()
+        <span class="keyword">except</span> requests.exceptions.RequestException <span class="keyword">as</span> e:
+            <span class="keyword">return</span> {<span class="string">"success"</span>: False, <span class="string">"message"</span>: <span class="string">f"Connection Error: {e}"</span>}
+</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">C# (Auth.cs)</span>
+                        <div class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText); const t = this.innerText; this.innerHTML = '<i class=\'fa-solid fa-check\'></i> Copied!'; setTimeout(()=>this.innerHTML=t, 2000);"><i class="fa-regular fa-copy"></i> Copy</div>
+                    </div>
+<pre>
+<span class="keyword">using</span> System.Security.Cryptography;
+<span class="keyword">using</span> System.Text;
+<span class="keyword">using</span> Newtonsoft.Json;
+<span class="keyword">using</span> System;
+<span class="keyword">using</span> System.Net.Http;
+<span class="keyword">using</span> System.Threading.Tasks;
+
+<span class="keyword">namespace</span> LynxAuth
+{
+    <span class="keyword">public class</span> Auth
+    {
+        <span class="keyword">private readonly string</span> OwnerId;
+        <span class="keyword">private readonly string</span> Secret;
+        <span class="keyword">private readonly string</span> ApiUrl;
+        <span class="keyword">private static readonly</span> HttpClient client = <span class="keyword">new</span> HttpClient();
+
+        <span class="keyword">public</span> Auth(<span class="keyword">string</span> ownerid, <span class="keyword">string</span> secret, <span class="keyword">string</span> apiUrl = <span class="string">"https://api.lynxauth.qzz.io/"</span>)
+        {
+            OwnerId = ownerid;
+            Secret = secret;
+
+            <span class="keyword">if</span> (apiUrl.EndsWith(<span class="string">"/"</span>))
+                apiUrl = apiUrl.TrimEnd(<span class="string">'/'</span>);
+
+            ApiUrl = <span class="string">$"{apiUrl}/api/1.0/user_login"</span>;
+        }
+
+        <span class="keyword">private static string</span> GetHwid()
+        {
+            var input = <span class="string">$"{Environment.MachineName}-{Environment.UserName}-{Environment.ProcessorCount}"</span>;
+            <span class="keyword">using</span> (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                <span class="keyword">return</span> BitConverter.ToString(bytes).Replace(<span class="string">"-"</span>, <span class="string">""</span>).ToLowerInvariant();
+            }
+        }
+
+        <span class="keyword">public async</span> Task&lt;dynamic&gt; Login(<span class="keyword">string</span> username, <span class="keyword">string</span> password)
+        {
+            var payload = <span class="keyword">new</span>
+            {
+                ownerid = OwnerId,
+                app_secret = Secret,
+                username = username,
+                password = password,
+                hwid = GetHwid()
+            };
+
+            var json = JsonConvert.SerializeObject(payload);
+            var content = <span class="keyword">new</span> StringContent(json, Encoding.UTF8, <span class="string">"application/json"</span>);
+
+            <span class="keyword">try</span>
+            {
+                var response = <span class="keyword">await</span> client.PostAsync(ApiUrl, content);
+                var result = <span class="keyword">await</span> response.Content.ReadAsStringAsync();
+                <span class="keyword">return</span> JsonConvert.DeserializeObject(result);
+            }
+            <span class="keyword">catch</span> (HttpRequestException e)
+            {
+                <span class="keyword">return new</span> { success = <span class="keyword">false</span>, message = <span class="string">$"Connection Error: {e.Message}"</span> };
+            }
+        }
+    }
+}
+</pre>
+                </div>
+            </div>
+            
+            <h2>Response Interpretation</h2>
+            <p>A unified dict/JSON object outlining session persistence is returned.</p>
+            <ul>
+                <li><code>{"success": true, "message": "Login successful.", "info": {"expires": "2026-12-31T00:00:00"}}</code></li>
+                <li><code>{"success": false, "message": "HWID mismatch."}</code> - Machine footprint deviation.</li>
+                <li><code>{"success": false, "message": "Your subscription has expired."}</code> - Strict time lockout.</li>
+            </ul>
+        </div>
+
+        <!-- API: USER MANAGEMENT -->
+        <div id="api-users" class="content-section">
+            <div class="hero-section">
+                <h1>User Management</h1>
+                <p>Modify and assign entity states remotely through external bots or scripts.</p>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-url">
+                    <span class="endpoint-badge" style="color: var(--blue);">POST</span>
+                    <span style="color: var(--text-accent);">/users/action</span>
+                </div>
+                <p>Interact with active user allocations (e.g. resetting fingerprints).</p>
+                
+                <h3>Schema</h3>
+                <table>
+                    <tr><th>Parameter</th><th>Type</th><th>Notes</th></tr>
+                    <tr><td><code>user_id</code></td><td>String</td><td>Database document ID context</td></tr>
+                    <tr><td><code>action</code></td><td>String</td><td><code>"reset_hwid"</code>, <code>"set_expiry"</code>, or <code>"toggle_lock"</code></td></tr>
+                    <tr><td><code>lock_state</code></td><td>Boolean</td><td>Active ONLY if action = "toggle_lock"</td></tr>
+                    <tr><td><code>expire_str</code></td><td>String</td><td>Active ONLY if action = "set_expiry"</td></tr>
+                </table>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-url">
+                    <span class="endpoint-badge" style="color: var(--blue);">POST</span>
+                    <span style="color: var(--text-accent);">/users/create</span>
+                </div>
+                <p>Generate fresh identity matrices assigned to an App.</p>
+                
+                <h3>Schema</h3>
+                <table>
+                    <tr><th>Parameter</th><th>Type</th><th>Notes</th></tr>
+                    <tr><td><code>ownerid</code></td><td>String</td><td>Master credential identity</td></tr>
+                    <tr><td><code>appid</code></td><td>String</td><td>Locational registry string</td></tr>
+                    <tr><td><code>username/password</code></td><td>String</td><td>Keys</td></tr>
+                    <tr><td><code>days</code></td><td>Integer</td><td>Time added. Use <code>0</code> for Lifetime.</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- API: WEBHOOKS -->
+        <div id="api-webhooks" class="content-section">
+            <div class="hero-section">
+                <h1>Discord Integration</h1>
+                <p>Track network activity smoothly on social servers.</p>
+            </div>
+
+            <p>If webhook parameters are flagged active on the backend, LYNX dispatches an embed silently tracking end-user client behavior upon boot.</p>
+
+            <div class="endpoint-card">
+                <div class="endpoint-url">
+                    <span class="endpoint-badge" style="color: var(--blue);">POST</span>
+                    <span style="color: var(--text-accent);">/apps/webhook/save</span>
+                </div>
+                <p>Write discord targets to memory.</p>
+                
+                <h3>Schema</h3>
+                <table>
+                    <tr><th>Parameter</th><th>Type</th><th>Notes</th></tr>
+                    <tr><td><code>appid</code></td><td>String</td><td>Identity context</td></tr>
+                    <tr><td><code>webhook_url</code></td><td>String</td><td>Standard discord domain url</td></tr>
+                    <tr><td><code>show_hwid</code></td><td>Boolean</td><td>Display user hash dynamically</td></tr>
+                    <tr><td><code>show_expiry</code></td><td>Boolean</td><td>Compute total time left</td></tr>
+                    <tr><td><code>show_app</code></td><td>Boolean</td><td>Expose software name</td></tr>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- ADMIN SECTION -->
+        <div id="admin" class="content-section">
+            <div class="hero-section">
+                <h1>Platform Administration</h1>
+                <p>God Mode paths strictly reserved for platform administrators.</p>
+            </div>
+
+            <div class="endpoint-card">
+                <div class="endpoint-url">
+                    <span class="endpoint-badge" style="color: #a855f7;">POST</span>
+                    <span style="color: var(--text-accent);">/admin/stats</span>
+                </div>
+                <p>Calculate total node latency and platform capacities.</p>
+                <div class="code-block">
+<pre>
+<span class="comment">// Standard HTTP 200 Returns:</span>
+{
+    <span class="string">"status"</span>: <span class="string">"success"</span>,
+    <span class="string">"sellers"</span>: <span class="keyword">15</span>,
+    <span class="string">"users"</span>: <span class="keyword">342</span>,
+    <span class="string">"premium"</span>: <span class="keyword">8</span>,
+    <span class="string">"apps"</span>: <span class="keyword">21</span>
+}
+</pre>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function switchSection(id, element) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            element.classList.add('active');
+            
+            document.getElementById('docs-sidebar').classList.remove('open');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html>
