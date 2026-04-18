@@ -169,19 +169,19 @@ async function syncSeller(user) {
             
             document.getElementById("ownerid-display").innerText = currentOwnerId;
             
-            // Handle Tier Labels (Bronze, Silver, Gold)
+            // Handle Tier Labels (Free, Silver, Gold)
             if (group === 2) {
                 document.getElementById("stat-coins").innerHTML = '<span style="color:var(--primary); text-shadow:0 0 10px var(--primary-glow);">∞</span>';
                 document.getElementById("stat-sub").innerText = "Gold Developer";
-                document.getElementById("stat-sub").style.color = "#ffd700"; // Gold color
+                document.getElementById("stat-sub").style.color = "#ffd700"; // Gold
             } else if (group === 1) {
                 document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Silver Developer";
-                document.getElementById("stat-sub").style.color = "#c0c0c0"; // Silver color
+                document.getElementById("stat-sub").style.color = "#c0c0c0"; // Silver
             } else {
                 document.getElementById("stat-coins").innerText = data.coins;
-                document.getElementById("stat-sub").innerText = "Bronze Developer";
-                document.getElementById("stat-sub").style.color = "#cd7f32"; // Bronze color
+                document.getElementById("stat-sub").innerText = "Free Developer";
+                document.getElementById("stat-sub").style.color = "#9ca3af"; // Grey
             }
 
             document.getElementById("status-text").innerText = "Online";
