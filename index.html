@@ -141,8 +141,9 @@
             border-color: #5865F2;
             color: #fff;
         }
+
         .btn-discord:hover {
-            background: #4752c4; 
+            background: #4752c4;
             border-color: #4752c4;
         }
 
@@ -391,15 +392,21 @@
 
         .pricing-section {
             padding: 80px 20px;
-            max-width: 1000px;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
             margin-top: 40px;
+        }
+
+        @media (max-width: 1100px) {
+            .pricing-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
         }
 
         .pricing-card {
@@ -808,7 +815,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
         }
 
         .reviewer-top {
@@ -860,7 +867,9 @@
         <div class="nav-links" id="navLinks">
             <a href="#features">Why Us?</a>
             <a href="#pricing">Pricing</a>
-            <a href="#">Documentation</a>
+            <a href="#mobile">Mobile</a>
+            <a href="#updates">Updates</a>
+            <a href="docs.html">Documentation</a>
         </div>
 
 
@@ -972,6 +981,20 @@
                 <a href="panel.html" class="btn-price outline">Start Free</a>
             </div>
 
+            <div class="pricing-card">
+                <div class="price-title">Pro Developer</div>
+                <div class="price-num">₹400 <span class="price-sub">/ year</span></div>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check f-check"></i> Unlimited Apps</li>
+                    <li><i class="fa-solid fa-check f-check"></i> Unlimited Users</li>
+                    <li><i class="fa-solid fa-check f-check"></i> Hardware ID Locking</li>
+                    <li><i class="fa-solid fa-check f-check"></i> Secure Variables</li>
+                    <li><i class="fa-solid fa-check f-check"></i> 99.9% Uptime SLA</li>
+                    <li class="text-dim"><i class="fa-solid fa-xmark f-cross"></i> Backend + Frontend Source code</li>
+                </ul>
+                <a href="https://discord.com/users/1481652276337709127" class="btn-price outline">Purchase Pro</a>
+            </div>
+
             <div class="pricing-card popular">
                 <div class="pop-badge">MOST POPULAR</div>
                 <div class="price-title">Advanced Developer</div>
@@ -988,6 +1011,42 @@
                 <a href="https://discord.gg/Sz5ZGfk3GX" class="btn-price filled">Purchase Now</a>
             </div>
         </div>
+
+        <div class="premium-banner"
+            style="margin-top: 80px; background: #050505; border: 1px solid #1f1f1f; border-radius: 16px; padding: 50px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="flex: 1; min-width: 250px;">
+                <div
+                    style="display:inline-block; background:rgba(255,255,255,0.05); border:1px solid #333; color:#fff; font-size:0.75rem; padding:6px 12px; border-radius:20px; margin-bottom:20px; font-weight:600;">
+                    <i class="fa-solid fa-crown" style="color:#fbbf24; margin-right:5px;"></i> COMPLETE ACCESS</div>
+                <h3 style="font-size: 2rem; font-weight: 800; margin-bottom: 15px; color: #fff;">Own The Entire
+                    Platform.</h3>
+                <p style="color: #9ca3af; font-size: 1rem; line-height: 1.6; max-width: 500px;">Stop paying recurring
+                    subscriptions. Purchase the raw LYNX Auth backend + frontend source codes and deploy it completely
+                    privately on your own cloud.</p>
+
+                <div
+                    style="margin-top: 25px; background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 15px 20px; max-width: 500px; display: flex; gap: 15px; align-items: flex-start;">
+                    <i class="fa-brands fa-discord" style="color: #5865F2; font-size: 1.5rem; margin-top: 2px;"></i>
+                    <div>
+                        <div style="color: #fff; font-weight: 700; font-size: 0.95rem; margin-bottom: 5px;">How to
+                            Purchase</div>
+                        <div style="color: #888; font-size: 0.85rem; line-height: 1.5;">
+                            Click the button to join our Discord server and <b>create a ticket</b>, or <a
+                                href="https://discord.com/users/1481652276337709127" target="_blank"
+                                style="color: var(--primary); text-decoration: none; font-weight: 600;">DM the founder
+                                directly</a> to grab your copy instantly.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <a href="https://discord.gg/Sz5ZGfk3GX"
+                    style="display:inline-block; padding: 18px 36px; background: #fff; color: #000; font-weight: 800; border-radius: 8px; text-decoration: none; transition: 0.2s; box-shadow: 0 0 30px rgba(255,255,255,0.15);"
+                    onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Buy
+                    Source Code</a>
+                <div style="font-size: 0.8rem; color: #555; margin-top: 15px;">One-time payment. Lifetime updates.</div>
+            </div>
+        </div>
     </section>
 
     <section class="partners-section">
@@ -1001,6 +1060,88 @@
         </div>
     </section>
 
+    <!-- MOBILE APP SECTION (IMMERSIVE) -->
+    <section id="mobile" class="pricing-section"
+        style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; border-top: 1px solid var(--border);">
+        <div class="section-header">
+            <div class="badge"
+                style="background: rgba(168, 85, 247, 0.1); color: var(--accent); border-color: rgba(168, 85, 247, 0.3);">
+                LYNX MOBILE</div>
+            <h2 style="font-size: 3rem; margin-top: 10px;">Your Workspace, <span
+                    style="color:var(--accent)">Anywhere.</span></h2>
+            <p>Manage your entire authentication ecosystem from the palm of your hand.</p>
+        </div>
+
+        <div
+            style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 60px; margin-top: 40px;">
+            <div style="flex: 1; min-width: 300px; max-width: 500px;">
+                <div class="card" style="margin-bottom: 20px;">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <i class="fa-solid fa-mobile-screen" style="font-size: 2rem; color: var(--accent);"></i>
+                        <div>
+                            <h3 style="margin-bottom: 10px;">Native Mobile Control</h3>
+                            <p>Direct access to your apps, user management, and real-time logs in a smooth,
+                                high-performance APK.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="display: flex; gap: 20px; align-items: flex-start;">
+                        <i class="fa-solid fa-bolt" style="font-size: 2rem; color: var(--primary);"></i>
+                        <div>
+                            <h3 style="margin-bottom: 10px;">One-Touch Management</h3>
+                            <p>Reset HWIDs, extend user subscriptions, and view your coin balance instantly with our
+                                intuitive mobile UI.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <a href="resource/lynxauth.apk" class="btn-primary"
+                        style="display: inline-flex; align-items: center; gap: 12px; background: var(--accent); border-color: var(--accent); box-shadow: 0 0 20px rgba(168, 85, 247, 0.3); padding: 18px 40px; font-size: 1.1rem;">
+                        <i class="fa-brands fa-android" style="font-size: 1.4rem;"></i> Download Android APK
+                    </a>
+                    <p style="font-size: 0.8rem; color: #555; margin-top: 15px; margin-left: 5px;">Version 2.0 Stable •
+                        Supports Android 8.0+</p>
+                </div>
+            </div>
+
+            <div
+                style="position: relative; width: 300px; height: 600px; background: #050505; border: 8px solid #111; border-radius: 40px; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8), 0 0 40px rgba(168, 85, 247, 0.1); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <div
+                    style="position: absolute; top: 0; width: 100%; height: 30px; background: #000; display: flex; justify-content: center; align-items: center;">
+                    <div style="width: 60px; height: 12px; background: #111; border-radius: 10px;"></div>
+                </div>
+                <i class="fa-solid fa-shield-cat"
+                    style="font-size: 6rem; color: var(--accent); opacity: 0.2; animation: float 4s ease-in-out infinite;"></i>
+                <div style="position: absolute; bottom: 40px; text-align: center; width: 100%;">
+                    <div style="font-size: 0.7rem; color: #333; font-family: 'JetBrains Mono';">SECURE HANDSHAKE...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UPDATES SECTION (IMMERSIVE FULL-PAGE) -->
+    <section id="updates" class="reviews-section"
+        style="min-height: 100vh; background: linear-gradient(180deg, #000 0%, #050505 100%); border-top: 1px solid var(--border); padding-top: 100px;">
+        <div class="section-header">
+            <div class="badge">SYSTEM DISCOVERY</div>
+            <h2 style="font-size: 3rem; margin-top: 10px;">The <span style="color:var(--primary)">Changelog</span></h2>
+            <p>Full history of improvements, security patches, and new features.</p>
+        </div>
+
+        <div id="updates-container"
+            style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 20px;">
+            <!-- Timeline vertical line -->
+            <div
+                style="position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, var(--primary) 0%, transparent 100%); opacity: 0.3;">
+            </div>
+
+            <div style="text-align: center; color: var(--text-muted); padding: 50px;">Loading historical logs...</div>
+        </div>
+    </section>
+
     <section class="reviews-section">
         <div class="section-header">
             <h2>Our Reviews</h2>
@@ -1009,89 +1150,107 @@
         <div class="reviews-grid">
             <div class="review-card">
                 <div class="reviewer-top">
-                    <img src="https://cdn.discordapp.com/avatars/1212429667353763953/cb30baf7e0c5a291817f32d9b850c25a.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <img src="https://cdn.discordapp.com/avatars/1212429667353763953/cb30baf7e0c5a291817f32d9b850c25a.png?size=1024"
+                        alt="Reviewer" class="reviewer-photo">
                     <div class="reviewer-info">
                         <div class="reviewer-name">Obito X cheats</div>
                         <div class="reviewer-email">Obito.modz@gmail.com</div>
                     </div>
                 </div>
                 <div class="rating">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
-                <p class="review-text">"This Auth system is super cool and way better secure as compared to other auth i ever used."</p>
+                <p class="review-text">"This Auth system is super cool and way better secure as compared to other auth i
+                    ever used."</p>
             </div>
 
             <div class="review-card">
                 <div class="reviewer-top">
-                    <img src="https://cdn.discordapp.com/avatars/1342442845797355574/b95692ac76dc4264512d278433db0b2a.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <img src="https://cdn.discordapp.com/avatars/1342442845797355574/b95692ac76dc4264512d278433db0b2a.png?size=1024"
+                        alt="Reviewer" class="reviewer-photo">
                     <div class="reviewer-info">
                         <div class="reviewer-name">Titan editz</div>
                         <div class="reviewer-email">Titaneditz99@gmail.com</div>
                     </div>
                 </div>
                 <div class="rating">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i>
                 </div>
-                <p class="review-text">"Great experience! used frequently in my cheats and it's super secure + fast loved it."</p>
+                <p class="review-text">"Great experience! used frequently in my cheats and it's super secure + fast
+                    loved it."</p>
             </div>
 
             <div class="review-card">
                 <div class="reviewer-top">
-                    <img src="https://cdn.discordapp.com/avatars/1459655728628240628/f99e7cf5f2c44f0164353edc7888f725.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <img src="https://cdn.discordapp.com/avatars/1459655728628240628/f99e7cf5f2c44f0164353edc7888f725.png?size=1024"
+                        alt="Reviewer" class="reviewer-photo">
                     <div class="reviewer-info">
                         <div class="reviewer-name">Krish x 99</div>
                         <div class="reviewer-email">krishxcheats88@gmail.com</div>
                     </div>
                 </div>
                 <div class="rating">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p class="review-text">"Absolutely love it! million stars for reliability and performance. 👍"</p>
             </div>
 
             <div class="review-card">
                 <div class="reviewer-top">
-                    <img src="https://cdn.discordapp.com/avatars/1154983642016264222/687b3fe241642cf3c5fcce1843f26647.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <img src="https://cdn.discordapp.com/avatars/1154983642016264222/687b3fe241642cf3c5fcce1843f26647.png?size=1024"
+                        alt="Reviewer" class="reviewer-photo">
                     <div class="reviewer-info">
                         <div class="reviewer-name">Nxr Ovi</div>
                         <div class="reviewer-email">ovicheats@gmail.com</div>
                     </div>
                 </div>
                 <div class="rating">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p class="review-text">"I am very happy toh use the auth source .. everyone you can buy all item."</p>
             </div>
 
             <div class="review-card">
                 <div class="reviewer-top">
-                    <img src="https://cdn.discordapp.com/avatars/1441124184880054362/01c12c6ebc3241cdbd03b88f99b26466.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <img src="https://cdn.discordapp.com/avatars/1441124184880054362/01c12c6ebc3241cdbd03b88f99b26466.png?size=1024"
+                        alt="Reviewer" class="reviewer-photo">
                     <div class="reviewer-info">
                         <div class="reviewer-name">lord sk</div>
                         <div class="reviewer-email">aizencheats87@gmail.com</div>
                     </div>
                 </div>
                 <div class="rating">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                 </div>
-                <p class="review-text">"I’ve been using Lynx Auth these days, and I’m planning to use my buddy’s auth for all my applications. Please continue supporting my buddy—he’s working really hard to provide quality materials at affordable prices without compromising on quality. Also, the auth has no limits for premium users."</p>
+                <p class="review-text">"I’ve been using Lynx Auth these days, and I’m planning to use my buddy’s auth
+                    for all my applications. Please continue supporting my buddy—he’s working really hard to provide
+                    quality materials at affordable prices without compromising on quality. Also, the auth has no limits
+                    for premium users."</p>
             </div>
 
             <div class="review-card">
                 <div class="reviewer-top">
-                    <img src="https://cdn.discordapp.com/avatars/1469645366893744181/c89039d7f01cf9cdbc9c644ca05ff0ff.png?size=1024" alt="Reviewer" class="reviewer-photo">
+                    <img src="https://cdn.discordapp.com/avatars/1469645366893744181/c89039d7f01cf9cdbc9c644ca05ff0ff.png?size=1024"
+                        alt="Reviewer" class="reviewer-photo">
                     <div class="reviewer-info">
                         <div class="reviewer-name">billubadmosh</div>
                         <div class="reviewer-email">the.topgamer@gmail.com</div>
                     </div>
                 </div>
                 <div class="rating">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                 </div>
-                <p class="review-text">"I purchased lynxauth backend src today from @ʟʏɴx  ! really it was amazing . auth is fast and it have sexy ui 100% recommend to others"</p>
+                <p class="review-text">"I purchased lynxauth backend src today from @ʟʏɴx ! really it was amazing . auth
+                    is fast and it have sexy ui 100% recommend to others"</p>
             </div>
 
-            
+
         </div>
     </section>
 
@@ -1117,7 +1276,7 @@
         <div class="logo footer-logo"><i class="fa-solid fa-shield-cat"></i> LYNX AUTH</div>
         <div class="socials">
             <a href="https://discord.gg/Sz5ZGfk3GX"><i class="fa-brands fa-discord"></i></a>
-            <a href="#"><i class="fa-brands fa-github"></i></a>
+            <a href="https://github.com/lynxmodz99/Lynx-Auth-"><i class="fa-brands fa-github"></i></a>
             <a href="https://www.youtube.com/@LYNX_X_999"><i class="fa-brands fa-youtube"></i></a>
         </div>
         <p style="color:#555; font-size:0.8rem;">&copy; 2025 Lynx Authentication. All rights reserved.</p>
@@ -1214,7 +1373,62 @@
             }
         });
 
-        window.onload = typeWriter;
+        window.onload = () => {
+            typeWriter();
+            loadUpdates();
+        };
+
+        // Fetch and show updates
+        async function loadUpdates() {
+            const container = document.getElementById('updates-container');
+            if (!container) return;
+            try {
+                const response = await fetch('https://api.lynxauth.qzz.io/public/updates');
+                const data = await response.json();
+                if (data.status === 'success' && data.updates && data.updates.length > 0) {
+                    container.innerHTML = '';
+                    data.updates.forEach((update, index) => {
+                        const card = document.createElement('div');
+                        card.style.padding = '40px 0 40px 40px';
+                        card.style.position = 'relative';
+
+                        // Timeline point
+                        const point = document.createElement('div');
+                        point.style.position = 'absolute';
+                        point.style.left = '-5px';
+                        point.style.top = '50px';
+                        point.style.width = '11px';
+                        point.style.height = '11px';
+                        point.style.borderRadius = '50%';
+                        point.style.background = index === 0 ? 'var(--primary)' : '#222';
+                        point.style.border = index === 0 ? '3px solid rgba(99, 102, 241, 0.3)' : '3px solid #000';
+                        point.style.zIndex = '2';
+
+                        card.innerHTML = `
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="padding: 4px 12px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 20px; color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+                                            ${index === 0 ? 'Latest Stable' : 'Archived Patch'}
+                                        </div>
+                                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); opacity: 0.6;">${update.date}</span>
+                                    </div>
+                                </div>
+                                <div style="background: #080808; border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                                    <div style="color: #fff; font-size: 1.05rem; line-height: 1.8; white-space: pre-wrap; font-family: 'Inter', sans-serif;">${update.message}</div>
+                                </div>
+                            </div>
+                        `;
+                        card.appendChild(point);
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = '<div style="text-align: center; color: var(--text-muted);">No updates published yet.</div>';
+                }
+            } catch (err) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Failed to load updates.</div>';
+            }
+        }
     </script>
 </body>
 
