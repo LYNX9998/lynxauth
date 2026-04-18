@@ -16,7 +16,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 
-const API_URL = "https://lynxauth.onrender.com";
+const API_URL = "https://api.lynxauth.qzz.io/";
 
 
 let currentOwnerId = null;
@@ -30,10 +30,10 @@ auth.onAuthStateChanged(async (user) => {
     if (user) {
         document.getElementById("auth-view").style.display = "none";
         document.getElementById("dashboard-view").style.display = "grid";
-        
+
         currentUserEmail = user.email;
         document.getElementById("sidebar-email").innerText = user.email.length > 20 ? user.email.substring(0, 18) + '...' : user.email;
-        
+
         await syncSeller(user);
         updateCodeView();
     } else {
@@ -45,8 +45,8 @@ auth.onAuthStateChanged(async (user) => {
 async function emailLogin() {
     const email = document.getElementById("login-email").value;
     const pass = document.getElementById("login-password").value;
-    
-    if(!email || !pass) return showPopup("Error", "Please fill in all fields.");
+
+    if (!email || !pass) return showPopup("Error", "Please fill in all fields.");
 
     try {
         await auth.signInWithEmailAndPassword(email, pass);
@@ -59,7 +59,7 @@ async function emailRegister() {
     const email = document.getElementById("reg-email").value;
     const pass = document.getElementById("reg-password").value;
 
-    if(!email || !pass) return showPopup("Error", "Please fill in all fields.");
+    if (!email || !pass) return showPopup("Error", "Please fill in all fields.");
 
     try {
         await auth.createUserWithEmailAndPassword(email, pass);
@@ -84,12 +84,12 @@ function logout() {
 }
 
 function deleteAccount() {
-    if(confirm("Are you sure you want to delete your account? This will delete all apps and users.")) {
+    if (confirm("Are you sure you want to delete your account? This will delete all apps and users.")) {
         apiCall("/seller/delete", { ownerid: currentOwnerId })
-        .then(() => {
-            const user = auth.currentUser;
-            user.delete().then(() => window.location.reload());
-        });
+            .then(() => {
+                const user = auth.currentUser;
+                user.delete().then(() => window.location.reload());
+            });
     }
 }
 
@@ -107,7 +107,7 @@ function showLoginForm() {
 function showView(viewName) {
     document.querySelectorAll(".content-view").forEach(el => el.classList.remove("active"));
     document.getElementById(viewName + "-content").classList.add("active");
-    
+
     document.querySelectorAll(".nav-btn-side").forEach(el => el.classList.remove("active"));
     const navMap = {
         'dashboard': 'nav-dash',
@@ -117,14 +117,14 @@ function showView(viewName) {
         'instructions': 'nav-instructions',
         'webhooks': 'nav-webhooks'
     };
-    if(navMap[viewName]) document.getElementById(navMap[viewName]).classList.add("active");
+    if (navMap[viewName]) document.getElementById(navMap[viewName]).classList.add("active");
 
     document.querySelector(".sidebar").classList.remove("open");
     document.getElementById("sidebar-overlay").style.display = "none";
 
-    if(viewName === 'applications') loadApps();
-    if(viewName === 'webhooks') populateWebhookDropdown();
-    if(viewName === 'users') loadUsersViewDropdown();
+    if (viewName === 'applications') loadApps();
+    if (viewName === 'webhooks') populateWebhookDropdown();
+    if (viewName === 'users') loadUsersViewDropdown();
 }
 
 function toggleMobileMenu() {
@@ -157,21 +157,21 @@ async function apiCall(endpoint, body) {
 
 async function syncSeller(user) {
     try {
-        const data = await apiCall("/auth/sync", { 
-            firebase_uid: user.uid, 
-            email: user.email 
+        const data = await apiCall("/auth/sync", {
+            firebase_uid: user.uid,
+            email: user.email
         });
-        
-        if(data.status === "success") {
+
+        if (data.status === "success") {
             currentOwnerId = data.ownerid;
             document.getElementById("ownerid-display").innerText = currentOwnerId;
             document.getElementById("stat-coins").innerText = data.coins;
             document.getElementById("stat-sub").innerText = data.is_premium ? "Premium" : "Free Tier";
             document.getElementById("stat-sub").style.color = data.is_premium ? "var(--primary)" : "#888";
-            
+
             document.getElementById("status-text").innerText = "Online";
             document.getElementById("status-badge").classList.remove("offline");
-            
+
             loadApps(true);
         }
     } catch (e) {
@@ -183,7 +183,7 @@ async function syncSeller(user) {
 
 async function createApp() {
     const name = document.getElementById("app-name-input").value;
-    if(!name) return showPopup("Error", "App name is required");
+    if (!name) return showPopup("Error", "App name is required");
 
     try {
         await apiCall("/apps/create", { ownerid: currentOwnerId, app_name: name });
@@ -191,19 +191,19 @@ async function createApp() {
         document.getElementById("app-name-input").value = "";
         showPopup("Success", "Application created successfully!");
         loadApps();
-        syncSeller(auth.currentUser); 
-    } catch (e) {}
+        syncSeller(auth.currentUser);
+    } catch (e) { }
 }
 
 async function loadApps(updateStats = false) {
     try {
         const data = await apiCall("/apps/list", { ownerid: currentOwnerId });
         cachedApps = data.apps;
-        
+
         const listContainer = document.getElementById("apps-list");
         listContainer.innerHTML = "";
 
-        if(updateStats) {
+        if (updateStats) {
             document.getElementById("stat-total-apps").innerText = cachedApps.length;
         }
 
@@ -243,24 +243,24 @@ async function loadApps(updateStats = false) {
 }
 
 async function deleteApp(appid) {
-    if(!confirm("Are you sure? This deletes all users in this app.")) return;
+    if (!confirm("Are you sure? This deletes all users in this app.")) return;
     try {
         await apiCall("/apps/delete", { appid: appid });
         showPopup("Success", "App deleted.");
         loadApps(true);
-    } catch(e) {}
+    } catch (e) { }
 }
 
 async function createUser(appid) {
     const userEl = document.getElementById(`u-name-${appid}`);
     const passEl = document.getElementById(`u-pass-${appid}`);
     const expEl = document.getElementById(`u-exp-${appid}`);
-    
+
     const username = userEl.value;
     const password = passEl.value;
-    const expireStr = expEl.value; 
+    const expireStr = expEl.value;
 
-    if(!username || !password) return showPopup("Error", "Username and Password required.");
+    if (!username || !password) return showPopup("Error", "Username and Password required.");
 
     const payload = {
         ownerid: currentOwnerId,
@@ -270,7 +270,7 @@ async function createUser(appid) {
         days: 0
     };
 
-    if(expireStr) {
+    if (expireStr) {
         payload.expire_str = expireStr;
     }
 
@@ -280,7 +280,7 @@ async function createUser(appid) {
         userEl.value = "";
         passEl.value = "";
         expEl.value = "";
-    } catch (e) {}
+    } catch (e) { }
 }
 
 
@@ -289,14 +289,14 @@ function loadUsersViewDropdown() {
     const listContainer = document.getElementById("dropdown-options-list");
     const hiddenInput = document.getElementById("user-app-filter");
     const triggerText = document.getElementById("dropdown-selected-text");
-    
+
 
     listContainer.innerHTML = "";
-    
+
     const currentVal = hiddenInput.value;
     const currentApp = cachedApps.find(a => a.appid === currentVal);
-    
-    if(currentApp) {
+
+    if (currentApp) {
         triggerText.innerText = currentApp.name;
         triggerText.style.color = "#fff";
     } else {
@@ -309,11 +309,11 @@ function loadUsersViewDropdown() {
         const div = document.createElement("div");
         div.className = "dropdown-option";
         div.innerHTML = `<span>${app.name}</span> <i class="fa-solid fa-check"></i>`;
-        
+
         div.onclick = () => {
             selectAppOption(app.appid, app.name);
         };
-        
+
         listContainer.appendChild(div);
     });
 }
@@ -322,7 +322,7 @@ function loadUsersViewDropdown() {
 function toggleAppDropdown() {
     const container = document.getElementById("dropdown-options-list");
     const trigger = document.querySelector(".dropdown-trigger");
-    
+
 
     container.classList.toggle("open");
     trigger.classList.toggle("active");
@@ -333,25 +333,25 @@ function selectAppOption(appid, appName) {
     const textEl = document.getElementById("dropdown-selected-text");
     textEl.innerText = appName;
     textEl.style.color = "#fff";
-    
+
 
     document.getElementById("user-app-filter").value = appid;
-    
+
 
     toggleAppDropdown();
-    
+
 
     loadUsersForSelectedApp();
 }
 
 
-window.addEventListener('click', function(e) {
+window.addEventListener('click', function (e) {
     const dropdown = document.getElementById('custom-app-dropdown');
     const container = document.getElementById("dropdown-options-list");
     const trigger = document.querySelector(".dropdown-trigger");
-    
+
     if (dropdown && !dropdown.contains(e.target)) {
-        if(container.classList.contains('open')) {
+        if (container.classList.contains('open')) {
             container.classList.remove('open');
             trigger.classList.remove('active');
         }
@@ -368,8 +368,8 @@ function openUsersModal(appid, appName) {
 async function loadUsersForSelectedApp() {
     const appid = document.getElementById("user-app-filter").value;
     const container = document.getElementById("users-table-body");
-    
-    if(!appid) {
+
+    if (!appid) {
         container.innerHTML = '<div class="empty-state">Select an application to view users.</div>';
         return;
     }
@@ -378,7 +378,7 @@ async function loadUsersForSelectedApp() {
 
     try {
         const data = await apiCall("/users/list", { appid: appid });
-        currentAppUsers = data.users; 
+        currentAppUsers = data.users;
         renderUsers(currentAppUsers);
     } catch (e) {
         container.innerHTML = '<div class="empty-state">Failed to load users.</div>';
@@ -388,19 +388,19 @@ async function loadUsersForSelectedApp() {
 function renderUsers(users) {
     const container = document.getElementById("users-table-body");
     const appid = document.getElementById("user-app-filter").value;
-    
-    if(users.length === 0) {
+
+    if (users.length === 0) {
         container.innerHTML = '<div class="empty-state">No users found.</div>';
         return;
     }
 
     container.innerHTML = "";
-    
+
     users.forEach(u => {
         let datePart = "Never";
-        if(u.expires_at) datePart = u.expires_at.split('T')[0];
+        if (u.expires_at) datePart = u.expires_at.split('T')[0];
 
-        const isLocked = u.hwid_locked !== false; 
+        const isLocked = u.hwid_locked !== false;
         const hwidDisplay = u.hwid ? "Linked" : "Not Linked";
         const hwidColor = u.hwid ? "#10b981" : "#666";
 
@@ -442,13 +442,13 @@ function renderUsers(users) {
 function toggleMenu(uid, event) {
     event.stopPropagation();
     document.querySelectorAll('.action-menu').forEach(el => {
-        if(el.id !== `menu-${uid}`) el.classList.remove('show');
+        if (el.id !== `menu-${uid}`) el.classList.remove('show');
     });
     const menu = document.getElementById(`menu-${uid}`);
     menu.classList.toggle('show');
 }
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (!e.target.closest('.action-menu') && !e.target.closest('.btn-icon')) {
         document.querySelectorAll('.action-menu').forEach(el => el.classList.remove('show'));
     }
@@ -456,21 +456,21 @@ document.addEventListener('click', function(e) {
 
 async function toggleHwidLock(uid, newState) {
     try {
-        await apiCall("/users/action", { 
-            user_id: uid, 
-            action: "toggle_lock", 
-            lock_state: newState 
+        await apiCall("/users/action", {
+            user_id: uid,
+            action: "toggle_lock",
+            lock_state: newState
         });
 
-        loadUsersForSelectedApp(); 
+        loadUsersForSelectedApp();
     } catch (e) {
         showPopup("Error", "Failed to toggle lock.");
-        loadUsersForSelectedApp(); 
+        loadUsersForSelectedApp();
     }
 }
 
 async function resetHWID(uid) {
-    if(!confirm("Reset HWID for this user?")) return;
+    if (!confirm("Reset HWID for this user?")) return;
     try {
         await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
         showPopup("Success", "HWID Reset.");
@@ -493,8 +493,8 @@ function closeTimeModal(e) {
 async function submitTimeUpdate() {
     const uid = document.getElementById("time-user-id").value;
     const days = parseInt(document.getElementById("time-input").value);
-    
-    if(isNaN(days)) return showPopup("Error", "Invalid days.");
+
+    if (isNaN(days)) return showPopup("Error", "Invalid days.");
 
     try {
         await apiCall("/users/action", { user_id: uid, action: "add_time", value: days });
@@ -517,12 +517,12 @@ function closeModal() {
 }
 
 async function deleteUser(userId, appid, appName) {
-    if(!confirm("Delete this user?")) return;
+    if (!confirm("Delete this user?")) return;
     try {
         await apiCall("/users/delete", { user_id: userId });
 
         loadUsersForSelectedApp();
-    } catch(e) {}
+    } catch (e) { }
 }
 
 
@@ -540,7 +540,7 @@ function populateWebhookDropdown() {
 function loadWebhookSettings() {
     const appid = document.getElementById("wh-app-select").value;
     const app = cachedApps.find(a => a.appid === appid);
-    if(!app) return;
+    if (!app) return;
 
     const conf = app.webhook_config || {};
     document.getElementById("wh-url").value = conf.url || "";
@@ -552,7 +552,7 @@ function loadWebhookSettings() {
 
 async function saveWebhook() {
     const appid = document.getElementById("wh-app-select").value;
-    if(!appid) return showPopup("Error", "Select an app first.");
+    if (!appid) return showPopup("Error", "Select an app first.");
 
     const config = {
         appid: appid,
@@ -567,8 +567,8 @@ async function saveWebhook() {
         await apiCall("/apps/webhook/save", config);
         showPopup("Success", "Webhook settings saved.");
         const app = cachedApps.find(a => a.appid === appid);
-        if(app) app.webhook_config = config; 
-    } catch (e) {}
+        if (app) app.webhook_config = config;
+    } catch (e) { }
 }
 
 
@@ -591,7 +591,7 @@ namespace LynxAuth
         private readonly string ApiUrl;
         private static readonly HttpClient client = new HttpClient();
 
-        public Auth(string ownerid, string secret, string apiUrl = "https://lynxauth.onrender.com")
+        public Auth(string ownerid, string secret, string apiUrl = "https://api.lynxauth.qzz.io/")
         {
             OwnerId = ownerid;
             Secret = secret;
@@ -645,13 +645,13 @@ import platform
 import hashlib
 
 class LynxAuthAPI:
-    def __init__(self, ownerid, secret, api_url="https://lynxauth.onrender.com"):
+    def __init__(self, ownerid, secret, api_url="https://api.lynxauth.qzz.io/"):
         if api_url.endswith("/"):
             api_url = api_url[:-1]
         
         self.ownerid = ownerid
         self.secret = secret
-        self.api_url = f"https://lynxauth.onrender.com/api/1.0/user_login"
+        self.api_url = f"https://api.lynxauth.qzz.io/"
 
     def get_hwid(self):
         return hashlib.sha256(f"{platform.node()}-{platform.processor()}".encode()).hexdigest()
@@ -682,7 +682,7 @@ function updateCodeView() {
     let code = currentLang === 'cs' ? CODE_CS : CODE_PY;
     if (currentOwnerId) {
         code = code.replace("REPLACE_WITH_OWNERID", currentOwnerId)
-                   .replace("YOUR_OWNER_ID", currentOwnerId);
+            .replace("YOUR_OWNER_ID", currentOwnerId);
     }
     document.getElementById("code-view").innerText = code;
 }
@@ -705,7 +705,7 @@ function downloadProject(type) {
     const filePath = type === 'cs' ? 'Examples/csharp_example.rar' : 'Examples/python_example.rar';
     const link = document.createElement("a");
     link.href = filePath;
-    link.download = filePath.split('/').pop(); 
+    link.download = filePath.split('/').pop();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -713,8 +713,8 @@ function downloadProject(type) {
 }
 
 function copyToClipboard(text) {
-    if(text === 'ownerid-display') text = document.getElementById('ownerid-display').innerText;
-    
+    if (text === 'ownerid-display') text = document.getElementById('ownerid-display').innerText;
+
     navigator.clipboard.writeText(text).then(() => {
         showPopup("Copied", "Copied to clipboard!");
     });
@@ -724,9 +724,9 @@ function showPopup(title, msg) {
     const overlay = document.getElementById("popup-overlay");
     document.getElementById("popup-title").innerText = title;
     document.getElementById("popup-message").innerText = msg;
-    
+
     const iconDiv = document.getElementById("popup-icon");
-    if(title.toLowerCase().includes("error") || title.toLowerCase().includes("failed")) {
+    if (title.toLowerCase().includes("error") || title.toLowerCase().includes("failed")) {
         iconDiv.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:var(--danger)"></i>';
     } else {
         iconDiv.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>';
@@ -750,14 +750,14 @@ function toggleMenu(uid, event) {
     event.stopPropagation();
 
     document.querySelectorAll('.action-menu').forEach(el => {
-        if(el.id !== `menu-${uid}`) el.classList.remove('show');
+        if (el.id !== `menu-${uid}`) el.classList.remove('show');
     });
-    
+
     const menu = document.getElementById(`menu-${uid}`);
     menu.classList.toggle('show');
 }
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (!e.target.closest('.action-btn-wrapper')) {
         document.querySelectorAll('.action-menu').forEach(el => el.classList.remove('show'));
     }
@@ -765,13 +765,13 @@ document.addEventListener('click', function(e) {
 
 async function toggleHwidLock(uid, newState) {
     try {
-        await apiCall("/users/action", { 
-            user_id: uid, 
-            action: "toggle_lock", 
-            lock_state: newState 
+        await apiCall("/users/action", {
+            user_id: uid,
+            action: "toggle_lock",
+            lock_state: newState
         });
         showPopup("Success", newState ? "HWID Locked." : "HWID Unlocked.");
-        loadUsersForSelectedApp(); 
+        loadUsersForSelectedApp();
     } catch (e) {
         showPopup("Error", "Failed to toggle lock.");
     }
@@ -779,7 +779,7 @@ async function toggleHwidLock(uid, newState) {
 
 
 async function resetHWID(uid) {
-    if(!confirm("Are you sure you want to reset the HWID for this user?")) return;
+    if (!confirm("Are you sure you want to reset the HWID for this user?")) return;
     try {
         await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
         showPopup("Success", "HWID has been reset.");
@@ -802,17 +802,90 @@ function closeTimeModal(e) {
     }
 }
 
+// Create User Modal Logic
+function openCreateUserModal() {
+    const modal = document.getElementById("create-user-modal");
+    const select = document.getElementById("cum-appid");
+    
+    // Populate dropdown with latest cached apps
+    select.innerHTML = '<option value="" disabled selected>Select an App...</option>';
+    cachedApps.forEach(app => {
+        const opt = document.createElement("option");
+        opt.value = app.appid;
+        opt.innerText = app.name;
+        select.appendChild(opt);
+    });
+
+    modal.style.display = "flex";
+}
+
+function closeCreateUserModal(event) {
+    if (event.target.id === "create-user-modal") {
+        document.getElementById("create-user-modal").style.display = "none";
+    }
+}
+
+async function submitCreateUserFromModal() {
+    const appid = document.getElementById("cum-appid").value;
+    const username = document.getElementById("cum-username").value;
+    const password = document.getElementById("cum-password").value;
+    const expiry = document.getElementById("cum-expiry").value;
+    const btn = document.getElementById("cum-btn");
+
+    if (!appid) return showPopup("Error", "Please select an application.");
+    if (!username || !password) return showPopup("Error", "Username and Password are required.");
+
+    const originalText = btn.innerText;
+    btn.innerText = "Creating...";
+    btn.disabled = true;
+
+    const payload = {
+        ownerid: currentOwnerId,
+        appid: appid,
+        username: username,
+        password: password,
+        days: 0
+    };
+
+    if (expiry) payload.expire_str = expiry;
+
+    try {
+        await apiCall("/users/create", payload);
+        showPopup("Success", `User ${username} created!`);
+        
+        // Reset and close
+        document.getElementById("cum-username").value = "";
+        document.getElementById("cum-password").value = "";
+        document.getElementById("cum-expiry").value = "";
+        document.getElementById("create-user-modal").style.display = "none";
+
+        // If we are currently on the users view and filtering for this app, refresh the list
+        const currentFilter = document.getElementById("user-app-filter").value;
+        if (currentFilter === appid) {
+            loadUsersForSelectedApp();
+        }
+    } catch (e) {
+        // Error is handled by apiCall popup
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
+        document.getElementById("time-modal").style.display = "none";
+    }
+}
+
 async function submitTimeUpdate() {
     const uid = document.getElementById("time-user-id").value;
     const days = parseInt(document.getElementById("time-input").value);
-    
-    if(isNaN(days)) return showPopup("Error", "Invalid days.");
+
+    if (isNaN(days)) return showPopup("Error", "Invalid days.");
 
     try {
-        await apiCall("/users/action", { 
-            user_id: uid, 
-            action: "add_time", 
-            value: days 
+        await apiCall("/users/action", {
+            user_id: uid,
+            action: "add_time",
+            value: days
         });
         document.getElementById("time-modal").style.display = "none";
         showPopup("Success", "Subscription updated.");
@@ -826,15 +899,15 @@ async function submitTimeUpdate() {
 function openSettingsModal(uid, username, expiresAt, isLocked) {
     document.getElementById("usm-uid").value = uid;
     document.getElementById("usm-title").innerText = "Settings: " + username;
-    
+
 
     document.getElementById("usm-lock-toggle").checked = isLocked;
-    
 
-    if(expiresAt) {
+
+    if (expiresAt) {
 
         let fmtDate = expiresAt;
-        if(expiresAt.length > 16) fmtDate = expiresAt.substring(0, 16);
+        if (expiresAt.length > 16) fmtDate = expiresAt.substring(0, 16);
         document.getElementById("usm-date").value = fmtDate;
     } else {
         document.getElementById("usm-date").value = "";
@@ -855,10 +928,10 @@ async function updateLockStateFromModal() {
     const isLocked = document.getElementById("usm-lock-toggle").checked;
 
     try {
-        await apiCall("/users/action", { 
-            user_id: uid, 
-            action: "toggle_lock", 
-            lock_state: isLocked 
+        await apiCall("/users/action", {
+            user_id: uid,
+            action: "toggle_lock",
+            lock_state: isLocked
         });
 
         loadUsersForSelectedApp();
@@ -870,7 +943,7 @@ async function updateLockStateFromModal() {
 
 async function resetHwidFromModal() {
     const uid = document.getElementById("usm-uid").value;
-    if(!confirm("Are you sure you want to reset HWID?")) return;
+    if (!confirm("Are you sure you want to reset HWID?")) return;
 
     try {
         await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
@@ -884,15 +957,15 @@ async function resetHwidFromModal() {
 
 async function saveExpiryFromModal() {
     const uid = document.getElementById("usm-uid").value;
-    const dateStr = document.getElementById("usm-date").value; 
-    
-    if(!dateStr) return showPopup("Error", "Please select a date.");
+    const dateStr = document.getElementById("usm-date").value;
+
+    if (!dateStr) return showPopup("Error", "Please select a date.");
 
     try {
-        await apiCall("/users/action", { 
-            user_id: uid, 
-            action: "set_expiry", 
-            expire_str: dateStr 
+        await apiCall("/users/action", {
+            user_id: uid,
+            action: "set_expiry",
+            expire_str: dateStr
         });
         showPopup("Success", "Expiration date updated.");
         loadUsersForSelectedApp();
