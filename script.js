@@ -312,6 +312,14 @@ async function createUser(appid) {
         userEl.value = "";
         passEl.value = "";
         expEl.value = "";
+        
+        // Refresh apps list to update user counts on dashboard
+        loadApps(true);
+        
+        const currentFilter = document.getElementById("user-app-filter").value;
+        if (currentFilter === appid) {
+            loadUsersForSelectedApp();
+        }
     } catch (e) { }
 }
 
@@ -471,46 +479,9 @@ function renderUsers(users) {
 }
 
 
-function toggleMenu(uid, event) {
-    event.stopPropagation();
-    document.querySelectorAll('.action-menu').forEach(el => {
-        if (el.id !== `menu-${uid}`) el.classList.remove('show');
-    });
-    const menu = document.getElementById(`menu-${uid}`);
-    menu.classList.toggle('show');
-}
+// Removed duplicated toggleMenu and click listeners (handled later in the file)
 
-document.addEventListener('click', function (e) {
-    if (!e.target.closest('.action-menu') && !e.target.closest('.btn-icon')) {
-        document.querySelectorAll('.action-menu').forEach(el => el.classList.remove('show'));
-    }
-});
-
-async function toggleHwidLock(uid, newState) {
-    try {
-        await apiCall("/users/action", {
-            user_id: uid,
-            action: "toggle_lock",
-            lock_state: newState
-        });
-
-        loadUsersForSelectedApp();
-    } catch (e) {
-        showPopup("Error", "Failed to toggle lock.");
-        loadUsersForSelectedApp();
-    }
-}
-
-async function resetHWID(uid) {
-    if (!confirm("Reset HWID for this user?")) return;
-    try {
-        await apiCall("/users/action", { user_id: uid, action: "reset_hwid" });
-        showPopup("Success", "HWID Reset.");
-        loadUsersForSelectedApp();
-    } catch (e) {
-        showPopup("Error", "Failed.");
-    }
-}
+// Removed duplicated toggleHwidLock and resetHWID (handled later in the file)
 
 function openTimeModal(uid) {
     document.getElementById("time-user-id").value = uid;
@@ -522,21 +493,7 @@ function closeTimeModal(e) {
     if (e.target.id === "time-modal") document.getElementById("time-modal").style.display = "none";
 }
 
-async function submitTimeUpdate() {
-    const uid = document.getElementById("time-user-id").value;
-    const days = parseInt(document.getElementById("time-input").value);
-
-    if (isNaN(days)) return showPopup("Error", "Invalid days.");
-
-    try {
-        await apiCall("/users/action", { user_id: uid, action: "add_time", value: days });
-        document.getElementById("time-modal").style.display = "none";
-        showPopup("Success", "Time updated.");
-        loadUsersForSelectedApp();
-    } catch (e) {
-        showPopup("Error", "Failed to update time.");
-    }
-}
+// Removed duplicated submitTimeUpdate (handled later in the file)
 
 function filterUsers() {
     const query = document.getElementById("user-search").value.toLowerCase();
