@@ -165,10 +165,24 @@ async function syncSeller(user) {
 
         if (data.status === "success") {
             currentOwnerId = data.ownerid;
+            const group = data.seller_group;
+            
             document.getElementById("ownerid-display").innerText = currentOwnerId;
-            document.getElementById("stat-coins").innerText = data.coins;
-            document.getElementById("stat-sub").innerText = data.is_premium ? "Premium" : "Free Tier";
-            document.getElementById("stat-sub").style.color = data.is_premium ? "var(--primary)" : "#888";
+            
+            // Handle Infinity Coins for Premium
+            if (group === 2) {
+                document.getElementById("stat-coins").innerHTML = '<span style="color:var(--primary); text-shadow:0 0 10px var(--primary-glow);">∞</span>';
+                document.getElementById("stat-sub").innerText = "Premium Seller";
+                document.getElementById("stat-sub").style.color = "var(--primary)";
+            } else if (group === 1) {
+                document.getElementById("stat-coins").innerText = data.coins;
+                document.getElementById("stat-sub").innerText = "Seller Plus";
+                document.getElementById("stat-sub").style.color = "#06b6d4"; // Cyan-ish for Plus
+            } else {
+                document.getElementById("stat-coins").innerText = data.coins;
+                document.getElementById("stat-sub").innerText = "Free Tier";
+                document.getElementById("stat-sub").style.color = "#888";
+            }
 
             document.getElementById("status-text").innerText = "Online";
             document.getElementById("status-badge").classList.remove("offline");
