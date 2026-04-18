@@ -169,19 +169,19 @@ async function syncSeller(user) {
             
             document.getElementById("ownerid-display").innerText = currentOwnerId;
             
-            // Handle Tier Labels
+            // Handle Tier Labels (Bronze, Silver, Gold)
             if (group === 2) {
                 document.getElementById("stat-coins").innerHTML = '<span style="color:var(--primary); text-shadow:0 0 10px var(--primary-glow);">∞</span>';
                 document.getElementById("stat-sub").innerText = "Gold Developer";
-                document.getElementById("stat-sub").style.color = "var(--primary)";
+                document.getElementById("stat-sub").style.color = "#ffd700"; // Gold color
             } else if (group === 1) {
                 document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Silver Developer";
-                document.getElementById("stat-sub").style.color = "#c0c0c0"; // Silver
+                document.getElementById("stat-sub").style.color = "#c0c0c0"; // Silver color
             } else {
                 document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Bronze Developer";
-                document.getElementById("stat-sub").style.color = "#cd7f32"; // Bronze
+                document.getElementById("stat-sub").style.color = "#cd7f32"; // Bronze color
             }
 
             document.getElementById("status-text").innerText = "Online";
@@ -857,9 +857,16 @@ async function openCreateUserModal() {
         const opt = document.createElement("option");
         opt.value = app.appid;
         opt.innerText = app.name;
+        // Auto-select the app that is currently active in the dashboard filter
         if (app.appid === activeApp) opt.selected = true;
         select.appendChild(opt);
     });
+
+    // Reset other fields
+    document.getElementById("cum-username").value = "";
+    document.getElementById("cum-password").value = "";
+    document.getElementById("cum-expiry").value = "";
+    document.getElementById("cum-days").value = "0";
 
     modal.style.display = "flex";
 }
