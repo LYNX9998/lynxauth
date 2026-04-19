@@ -8,17 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-base: #000000;
-            --bg-surface: #0a0a0a;
-            --bg-sidebar: #010101;
-            --bg-hover: #161616;
+            --bg-base: #f9fbff;
+            --bg-surface: #ffffff;
+            --bg-sidebar: #f2f4f7;
+            --bg-hover: #eaedf2;
             
-            --text-primary: #ededed;
-            --text-secondary: #888888;
-            --text-accent: #ffffff;
+            --text-primary: #1a1a1b;
+            --text-secondary: #6b7280;
+            --text-accent: #000000;
             
-            --border-subtle: #222222;
-            --border-hover: #333333;
+            --border-subtle: #e5e7eb;
+            --border-hover: #d1d5db;
             
             --primary: #6366f1;
             --blue: #3b82f6;
@@ -38,6 +38,7 @@
             height: 100vh;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* SIDEBAR */
@@ -91,6 +92,7 @@
             color: var(--text-accent);
             background: var(--bg-hover);
         }
+
 
         /* MAIN CONTENT */
         main {
@@ -160,6 +162,11 @@
 <body>
 
     <aside>
+        <a href="index.html" class="nav-item" style="border-bottom: 1px solid var(--border-subtle); margin-bottom: 20px;">
+            <i class="fa-solid fa-arrow-left"></i>
+            Return Home
+        </a>
+
         <a href="index.html" class="brand">
             <i class="fa-solid fa-shield-cat"></i>
             LYNX AUTH
@@ -181,6 +188,7 @@
                 <i class="fa-brands fa-discord"></i> Discord Server
             </a>
         </div>
+
     </aside>
 
     <main>
