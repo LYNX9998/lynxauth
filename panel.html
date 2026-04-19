@@ -78,7 +78,7 @@
             <div class="sidebar-profile">
                 <div class="avatar-circle">A</div>
                 <div>
-                    <div style="font-weight:600; font-size:0.9rem;">Admin</div>
+                    <div id="sidebar-name" style="font-weight:600; font-size:0.9rem;">Loading...</div>
                     <div id="sidebar-email" style="font-size:0.75rem; color:#666;">...</div>
                 </div>
             </div>
@@ -111,9 +111,10 @@
             <header class="top-nav">
                 <div class="mobile-toggle" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></div>
                 <h2 style="margin:0;">Dashboard</h2>
-                <div class="sys-badge" id="status-badge"><span id="status-dot"
-                        style="width:6px; height:6px; background:currentColor; border-radius:50%;"></span> <span
-                        id="status-text">Online</span></div>
+                <div class="sys-badge" id="status-badge" style="display: flex; align-items: center; gap: 8px;">
+                    <div id="status-dot" class="status-pulse-dot"></div>
+                    <span id="status-text">Connecting...</span>
+                </div>
             </header>
 
 
