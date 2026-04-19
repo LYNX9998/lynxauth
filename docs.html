@@ -8,18 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Vercel / Linear inspired minimalistic dark palette */
-            --bg-base: #000000;
-            --bg-surface: #0a0a0a;
-            --bg-sidebar: #010101;
-            --bg-hover: #161616;
+            /* Clean White Theme Only */
+            --bg-base: #f9fbff;
+            --bg-surface: #ffffff;
+            --bg-sidebar: #f2f4f7;
+            --bg-hover: #eaedf2;
             
-            --text-primary: #ededed;
-            --text-secondary: #888888;
-            --text-accent: #ffffff;
+            --text-primary: #1a1a1b;
+            --text-secondary: #6b7280;
+            --text-accent: #000000;
             
-            --border-subtle: #222222;
-            --border-hover: #333333;
+            --border-subtle: #e5e7eb;
+            --border-hover: #d1d5db;
             
             --success: #10b981;
             --warning: #f59e0b;
@@ -52,6 +52,7 @@
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* SIDEBAR (Minimalist) */
@@ -111,6 +112,7 @@
             background: rgba(255, 255, 255, 0.03);
             font-weight: 600;
         }
+
 
         /* MAIN CONTENT (Clean reading space) */
         main {
@@ -324,6 +326,10 @@
 <body>
 
     <aside id="docs-sidebar">
+        <a href="index.html" style="text-decoration:none;" class="brand">
+            <div><i class="fa-solid fa-arrow-left"></i> Return Home</div>
+        </a>
+
         <div class="brand">
             <div><i class="fa-solid fa-layer-group"></i> LYNX Developer</div>
             <i class="fa-solid fa-bars" id="mobile-toggle" onclick="document.getElementById('docs-sidebar').classList.toggle('open')" style="display:none; cursor:pointer;"></i>
@@ -439,13 +445,13 @@
 <span class="keyword">import</span> hashlib
 
 <span class="keyword">class</span> LynxAuthAPI:
-    <span class="keyword">def</span> __init__(self, ownerid, secret, api_url=<span class="string">"https://api.lynxauth.qzz.io/"</span>):
+    <span class="keyword">def</span> __init__(self, ownerid, secret, api_url=<span class="string">"https://api.lynxauth.qzz.io"</span>):
         <span class="keyword">if</span> api_url.endswith(<span class="string">"/"</span>):
             api_url = api_url[:-1]
         
         self.ownerid = ownerid
         self.secret = secret
-        self.api_url = <span class="string">f"https://api.lynxauth.qzz.io/"</span>
+        self.api_url = <span class="string">f"{api_url}/api/1.0/user_login"</span>
 
     <span class="keyword">def</span> get_hwid(self):
         <span class="keyword">return</span> hashlib.sha256(<span class="string">f"{platform.node()}-{platform.processor()}"</span>.encode()).hexdigest()
@@ -488,7 +494,7 @@
         <span class="keyword">private readonly string</span> ApiUrl;
         <span class="keyword">private static readonly</span> HttpClient client = <span class="keyword">new</span> HttpClient();
 
-        <span class="keyword">public</span> Auth(<span class="keyword">string</span> ownerid, <span class="keyword">string</span> secret, <span class="keyword">string</span> apiUrl = <span class="string">"https://api.lynxauth.qzz.io/"</span>)
+        <span class="keyword">public</span> Auth(<span class="keyword">string</span> ownerid, <span class="keyword">string</span> secret, <span class="keyword">string</span> apiUrl = <span class="string">"https://api.lynxauth.qzz.io"</span>)
         {
             OwnerId = ownerid;
             Secret = secret;
@@ -640,7 +646,7 @@
     <span class="string">"status"</span>: <span class="string">"success"</span>,
     <span class="string">"sellers"</span>: <span class="keyword">15</span>,
     <span class="string">"users"</span>: <span class="keyword">342</span>,
-    <span class="string">"premium"</span>: <span class="keyword">8</span>,
+    <span class="string">"gold"</span>: <span class="keyword">8</span>,
     <span class="string">"apps"</span>: <span class="keyword">21</span>
 }
 </pre>
