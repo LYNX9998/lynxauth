@@ -16,7 +16,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 
-const API_URL = "https://api.lynxauth.qzz.io/";
+const API_URL = "https://api.lynxauth.qzz.io";
 
 
 let currentOwnerId = null;
@@ -174,14 +174,20 @@ async function syncSeller(user) {
                 document.getElementById("stat-coins").innerHTML = '<span style="color:var(--primary); text-shadow:0 0 10px var(--primary-glow);">∞</span>';
                 document.getElementById("stat-sub").innerText = "Gold Developer";
                 document.getElementById("stat-sub").style.color = "#ffd700"; // Gold
+                document.getElementById("sidebar-name").innerText = "Gold Developer";
+                document.getElementById("sidebar-name").style.color = "#ffd700";
             } else if (group === 1) {
                 document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Silver Developer";
                 document.getElementById("stat-sub").style.color = "#c0c0c0"; // Silver
+                document.getElementById("sidebar-name").innerText = "Silver Developer";
+                document.getElementById("sidebar-name").style.color = "#c0c0c0";
             } else {
                 document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Free Developer";
                 document.getElementById("stat-sub").style.color = "#9ca3af"; // Grey
+                document.getElementById("sidebar-name").innerText = "Free Developer";
+                document.getElementById("sidebar-name").style.color = "#9ca3af";
             }
 
             document.getElementById("status-text").innerText = "Online";
@@ -580,7 +586,7 @@ namespace LynxAuth
         private readonly string ApiUrl;
         private static readonly HttpClient client = new HttpClient();
 
-        public Auth(string ownerid, string secret, string apiUrl = "https://api.lynxauth.qzz.io/")
+        public Auth(string ownerid, string secret, string apiUrl = "https://api.lynxauth.qzz.io")
         {
             OwnerId = ownerid;
             Secret = secret;
@@ -634,13 +640,13 @@ import platform
 import hashlib
 
 class LynxAuthAPI:
-    def __init__(self, ownerid, secret, api_url="https://api.lynxauth.qzz.io/"):
+    def __init__(self, ownerid, secret, api_url="https://api.lynxauth.qzz.io"):
         if api_url.endswith("/"):
             api_url = api_url[:-1]
         
         self.ownerid = ownerid
         self.secret = secret
-        self.api_url = f"https://api.lynxauth.qzz.io/"
+        self.api_url = f"{api_url}/api/1.0/user_login"
 
     def get_hwid(self):
         return hashlib.sha256(f"{platform.node()}-{platform.processor()}".encode()).hexdigest()
