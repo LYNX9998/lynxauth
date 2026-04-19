@@ -25,6 +25,30 @@ let cachedApps = [];
 let pendingAppRedirect = null;
 let currentLang = 'cs';
 let currentAppUsers = [];
+let statusCheckInterval = null;
+
+
+function updateStatus(isOnline) {
+    const statusText = document.getElementById("status-text");
+    const statusBadge = document.getElementById("status-badge");
+    if (statusText && statusBadge) {
+        statusText.innerText = isOnline ? "Online" : "Offline";
+        if (isOnline) {
+            statusBadge.classList.remove("offline");
+        } else {
+            statusBadge.classList.add("offline");
+        }
+    }
+}
+
+async function checkSystemStatus() {
+    try {
+        const response = await fetch(`${API_URL}/`);
+        updateStatus(response.ok);
+    } catch (e) {
+        updateStatus(false);
+    }
+}
 
 
 auth.onAuthStateChanged(async (user) => {
@@ -37,9 +61,18 @@ auth.onAuthStateChanged(async (user) => {
 
         await syncSeller(user);
         updateCodeView();
+
+        if (!statusCheckInterval) {
+            checkSystemStatus();
+            statusCheckInterval = setInterval(checkSystemStatus, 60000); 
+        }
     } else {
         document.getElementById("auth-view").style.display = "flex";
         document.getElementById("dashboard-view").style.display = "none";
+        if (statusCheckInterval) {
+            clearInterval(statusCheckInterval);
+            statusCheckInterval = null;
+        }
     }
 });
 
@@ -190,15 +223,15 @@ async function syncSeller(user) {
                 document.getElementById("sidebar-name").style.color = "#9ca3af";
             }
 
-            document.getElementById("status-text").innerText = "Online";
-            document.getElementById("status-badge").classList.remove("offline");
-
+            updateStatus(true);
             loadApps(true);
         }
     } catch (e) {
         console.error("Sync error", e);
-        document.getElementById("status-text").innerText = "Offline";
-        document.getElementById("status-badge").classList.add("offline");
+        // Only set to offline if it's a connection error, not just a data error
+        if (e.message.includes("Failed to fetch") || e.message.includes("NetworkError")) {
+            updateStatus(false);
+        }
     }
 }
 
