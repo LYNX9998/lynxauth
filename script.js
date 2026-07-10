@@ -204,19 +204,16 @@ async function syncSeller(user) {
             
             // Handle Tier Labels (Free, Silver, Gold)
             if (group === 2) {
-                document.getElementById("stat-coins").innerHTML = '<span style="color:var(--primary); text-shadow:0 0 10px var(--primary-glow);">∞</span>';
                 document.getElementById("stat-sub").innerText = "Gold Developer";
                 document.getElementById("stat-sub").style.color = "#ffd700"; // Gold
                 document.getElementById("sidebar-name").innerText = "Gold Developer";
                 document.getElementById("sidebar-name").style.color = "#ffd700";
             } else if (group === 1) {
-                document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Silver Developer";
                 document.getElementById("stat-sub").style.color = "#c0c0c0"; // Silver
                 document.getElementById("sidebar-name").innerText = "Silver Developer";
                 document.getElementById("sidebar-name").style.color = "#c0c0c0";
             } else {
-                document.getElementById("stat-coins").innerText = data.coins;
                 document.getElementById("stat-sub").innerText = "Free Developer";
                 document.getElementById("stat-sub").style.color = "#9ca3af"; // Grey
                 document.getElementById("sidebar-name").innerText = "Free Developer";
