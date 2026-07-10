@@ -1059,10 +1059,20 @@ function selectLicenseAppOption(appid, appName) {
     loadLicensesForSelectedApp();
 }
 
-function loadLicensesViewDropdown() {
+async function loadLicensesViewDropdown() {
     const listContainer = document.getElementById("license-dropdown-options-list");
     const hiddenInput = document.getElementById("license-app-filter");
     const triggerText = document.getElementById("license-dropdown-selected-text");
+
+    if (!cachedApps || cachedApps.length === 0) {
+        try {
+            const data = await apiCall("/apps/list", { ownerid: currentOwnerId });
+            cachedApps = data.apps;
+        } catch (e) {
+            return;
+        }
+    }
+
     listContainer.innerHTML = "";
     const currentVal = hiddenInput.value;
     const currentApp = cachedApps.find(a => a.appid === currentVal);
