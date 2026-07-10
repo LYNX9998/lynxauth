@@ -147,6 +147,7 @@ function showView(viewName) {
         'dashboard': 'nav-dash',
         'applications': 'nav-apps',
         'users': 'nav-users',
+        'licenses': 'nav-licenses',
         'integration': 'nav-integration',
         'instructions': 'nav-instructions',
         'webhooks': 'nav-webhooks'
@@ -159,6 +160,7 @@ function showView(viewName) {
     if (viewName === 'applications') loadApps();
     if (viewName === 'webhooks') populateWebhookDropdown();
     if (viewName === 'users') loadUsersViewDropdown();
+    if (viewName === 'licenses') loadLicensesViewDropdown();
 }
 
 function toggleMobileMenu() {
@@ -436,6 +438,17 @@ window.addEventListener('click', function (e) {
         if (container.classList.contains('open')) {
             container.classList.remove('open');
             trigger.classList.remove('active');
+        }
+    }
+
+    const licDropdown = document.getElementById('custom-license-dropdown');
+    const licContainer = document.getElementById("license-dropdown-options-list");
+    const licTrigger = document.querySelector("#custom-license-dropdown .dropdown-trigger");
+
+    if (licDropdown && !licDropdown.contains(e.target)) {
+        if (licContainer && licContainer.classList.contains('open')) {
+            licContainer.classList.remove('open');
+            licTrigger.classList.remove('active');
         }
     }
 });
@@ -1020,4 +1033,262 @@ async function saveExpiryFromModal() {
     } catch (e) {
         showPopup("Error", "Failed to update date.");
     }
+}
+
+let currentAppLicenses = [];
+
+function filterLicenses() {
+    const query = document.getElementById("license-search").value.toLowerCase();
+    const filtered = currentAppLicenses.filter(l => l.license_key.toLowerCase().includes(query));
+    renderLicenses(filtered);
+}
+
+function toggleLicenseDropdown() {
+    const container = document.getElementById("license-dropdown-options-list");
+    const trigger = document.querySelector("#custom-license-dropdown .dropdown-trigger");
+    container.classList.toggle("open");
+    trigger.classList.toggle("active");
+}
+
+function selectLicenseAppOption(appid, appName) {
+    const textEl = document.getElementById("license-dropdown-selected-text");
+    textEl.innerText = appName;
+    textEl.style.color = "#fff";
+    document.getElementById("license-app-filter").value = appid;
+    toggleLicenseDropdown();
+    loadLicensesForSelectedApp();
+}
+
+function loadLicensesViewDropdown() {
+    const listContainer = document.getElementById("license-dropdown-options-list");
+    const hiddenInput = document.getElementById("license-app-filter");
+    const triggerText = document.getElementById("license-dropdown-selected-text");
+    listContainer.innerHTML = "";
+    const currentVal = hiddenInput.value;
+    const currentApp = cachedApps.find(a => a.appid === currentVal);
+    if (currentApp) {
+        triggerText.innerText = currentApp.name;
+        triggerText.style.color = "#fff";
+    } else {
+        triggerText.innerText = "Select Application";
+        triggerText.style.color = "#888";
+    }
+    cachedApps.forEach(app => {
+        const div = document.createElement("div");
+        div.className = "dropdown-option";
+        div.innerHTML = `<span>${app.name}</span> <i class="fa-solid fa-check"></i>`;
+        div.onclick = () => {
+            selectLicenseAppOption(app.appid, app.name);
+        };
+        listContainer.appendChild(div);
+    });
+}
+
+async function loadLicensesForSelectedApp() {
+    const appid = document.getElementById("license-app-filter").value;
+    const container = document.getElementById("licenses-table-body");
+    if (!appid) {
+        container.innerHTML = '<div class="empty-state">Select an application to view licenses.</div>';
+        return;
+    }
+    container.innerHTML = '<div class="empty-state">Loading licenses...</div>';
+    try {
+        const data = await apiCall("/licenses/list", { appid: appid });
+        currentAppLicenses = data.licenses;
+        renderLicenses(currentAppLicenses);
+    } catch (e) {
+        container.innerHTML = '<div class="empty-state">Failed to load licenses.</div>';
+    }
+}
+
+function renderLicenses(licenses) {
+    const container = document.getElementById("licenses-table-body");
+    if (licenses.length === 0) {
+        container.innerHTML = '<div class="empty-state">No licenses found.</div>';
+        return;
+    }
+    container.innerHTML = "";
+    licenses.forEach(l => {
+        let datePart = "Never";
+        if (l.expires_at) datePart = l.expires_at.split('T')[0];
+        const isLocked = l.hwid_locked !== false;
+        const hwidDisplay = l.hwid ? "Linked" : "Not Linked";
+        const hwidColor = l.hwid ? "#10b981" : "#666";
+        const row = document.createElement("div");
+        row.className = "user-list-item";
+        row.innerHTML = `
+            <div style="flex:1.5; font-weight:500; display:flex; gap:8px; align-items:center; font-family:var(--font-code); font-size:0.85rem;">
+                ${l.license_key}
+                <i class="fa-solid fa-copy copy-icon" style="font-size:0.75rem;" onclick="copyToClipboard('${l.license_key}')"></i>
+            </div>
+            <div style="flex:1.5; font-size:0.8rem; display:flex; gap:8px; align-items:center;">
+                <span style="color:${hwidColor};">● ${hwidDisplay}</span>
+                ${isLocked ? '<i class="fa-solid fa-lock" style="font-size:0.7rem; color:var(--primary);" title="Locked"></i>' : '<i class="fa-solid fa-lock-open" style="font-size:0.7rem; color:#666;" title="Unlocked"></i>'}
+            </div>
+            <div style="flex:1.5; font-size:0.85rem; color:#888;">${datePart}</div>
+            <div style="width:120px; text-align:right;">
+                <div class="action-btn-wrapper action-container">
+                    <button class="btn-icon" onclick="openLicenseSettingsModal('${l.id}', '${l.license_key}', ${isLocked}, '${l.expires_at || ''}')">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <button class="btn-danger-sm" style="padding:6px 10px;" onclick="deleteLicense('${l.id}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function openCreateLicenseModal() {
+    const sel = document.getElementById("clm-appid");
+    sel.innerHTML = '<option value="" disabled selected>Select an App...</option>';
+    cachedApps.forEach(app => {
+        const opt = document.createElement("option");
+        opt.value = app.appid;
+        opt.innerText = app.name;
+        sel.appendChild(opt);
+    });
+    const currentFilter = document.getElementById("license-app-filter").value;
+    if (currentFilter) sel.value = currentFilter;
+    const now = new Date();
+    now.setMonth(now.getMonth() + 1);
+    const dateStr = now.toISOString().slice(0, 16);
+    document.getElementById("clm-expiry").value = dateStr;
+    document.getElementById("clm-days").value = "0";
+    document.getElementById("clm-key").value = "";
+    document.getElementById("create-license-modal").style.display = "flex";
+}
+
+function closeCreateLicenseModal(e) {
+    if (e.target.id === "create-license-modal") {
+        document.getElementById("create-license-modal").style.display = "none";
+    }
+}
+
+function generateRandomLicenseField() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let key = "LYNX-";
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            key += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        if (i < 3) key += "-";
+    }
+    document.getElementById("clm-key").value = key;
+}
+
+async function submitCreateLicenseFromModal() {
+    const appid = document.getElementById("clm-appid").value;
+    let key = document.getElementById("clm-key").value;
+    const expiry = document.getElementById("clm-expiry").value;
+    const days = parseInt(document.getElementById("clm-days").value);
+    if (!appid) return showPopup("Error", "Select an application.");
+    if (!key) {
+        generateRandomLicenseField();
+        key = document.getElementById("clm-key").value;
+    }
+    const btn = document.getElementById("clm-btn");
+    const originalText = btn.innerText;
+    btn.innerText = "Creating...";
+    btn.disabled = true;
+    const payload = {
+        ownerid: currentOwnerId,
+        appid: appid,
+        license_key: key,
+        days: days
+    };
+    if (expiry) payload.expire_str = expiry;
+    try {
+        await apiCall("/licenses/create", payload);
+        showPopup("Success", `License ${key} generated!`);
+        document.getElementById("clm-key").value = "";
+        document.getElementById("clm-expiry").value = "";
+        document.getElementById("clm-days").value = "0";
+        document.getElementById("create-license-modal").style.display = "none";
+        loadApps(true);
+        const currentFilter = document.getElementById("license-app-filter").value;
+        if (currentFilter === appid) {
+            loadLicensesForSelectedApp();
+        }
+    } catch (e) {
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
+
+function openLicenseSettingsModal(id, key, isLocked, expiresAt) {
+    document.getElementById("lsm-id").value = id;
+    document.getElementById("lsm-title").innerText = "License: " + key;
+    document.getElementById("lsm-lock-toggle").checked = isLocked;
+    if (expiresAt) {
+        let fmtDate = expiresAt;
+        if (expiresAt.length > 16) fmtDate = expiresAt.substring(0, 16);
+        document.getElementById("lsm-date").value = fmtDate;
+    } else {
+        document.getElementById("lsm-date").value = "";
+    }
+    document.getElementById("license-settings-modal").style.display = "flex";
+}
+
+function closeLicenseSettingsModal(e) {
+    if (e.target.id === "license-settings-modal") {
+        document.getElementById("license-settings-modal").style.display = "none";
+    }
+}
+
+async function updateLicenseLockStateFromModal() {
+    const id = document.getElementById("lsm-id").value;
+    const isLocked = document.getElementById("lsm-lock-toggle").checked;
+    try {
+        await apiCall("/licenses/action", {
+            license_id: id,
+            action: "toggle_lock",
+            lock_state: isLocked
+        });
+        loadLicensesForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to update lock state.");
+    }
+}
+
+async function resetLicenseHwidFromModal() {
+    const id = document.getElementById("lsm-id").value;
+    if (!confirm("Are you sure you want to reset HWID for this license?")) return;
+    try {
+        await apiCall("/licenses/action", { license_id: id, action: "reset_hwid" });
+        showPopup("Success", "HWID has been reset.");
+        loadLicensesForSelectedApp();
+    } catch (e) {
+        showPopup("Error", "Failed to reset HWID.");
+    }
+}
+
+async function saveLicenseExpiryFromModal() {
+    const id = document.getElementById("lsm-id").value;
+    const dateStr = document.getElementById("lsm-date").value;
+    if (!dateStr) return showPopup("Error", "Please select a date.");
+    try {
+        await apiCall("/licenses/action", {
+            license_id: id,
+            action: "set_expiry",
+            expire_str: dateStr
+        });
+        showPopup("Success", "Expiration date updated.");
+        loadLicensesForSelectedApp();
+        document.getElementById("license-settings-modal").style.display = "none";
+    } catch (e) {
+        showPopup("Error", "Failed to update date.");
+    }
+}
+
+async function deleteLicense(licenseId) {
+    if (!confirm("Delete this license?")) return;
+    try {
+        await apiCall("/licenses/delete", { license_id: licenseId });
+        loadLicensesForSelectedApp();
+        loadApps(true);
+    } catch (e) { }
 }
