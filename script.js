@@ -246,7 +246,7 @@ async function createApp() {
     } catch (e) { }
 }
 
-async function loadApps(updateStats = false) {
+async function loadApps(updateStats = true) {
     try {
         const data = await apiCall("/apps/list", { ownerid: currentOwnerId });
         cachedApps = data.apps;
@@ -256,6 +256,11 @@ async function loadApps(updateStats = false) {
 
         if (updateStats) {
             document.getElementById("stat-total-apps").innerText = cachedApps.length;
+            const totalUsers = cachedApps.reduce((sum, app) => sum + (app.user_count || 0), 0);
+            const totalUsersEl = document.getElementById("stat-total-users");
+            if (totalUsersEl) {
+                totalUsersEl.innerText = totalUsers;
+            }
         }
 
         cachedApps.forEach(app => {
@@ -265,7 +270,8 @@ async function loadApps(updateStats = false) {
             div.innerHTML = `
                 <div class="app-row-header" onclick="this.parentElement.classList.toggle('expanded')">
                     <div class="app-title"><i class="fa-solid fa-cube"></i> ${app.name}</div>
-                    <div style="display:flex; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="app-meta" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">${app.user_count || 0} users</span>
                         <span class="app-meta">ID: ${app.appid.substring(0, 8)}...</span>
                         <i class="fa-solid fa-chevron-down" style="color:#555"></i>
                     </div>
