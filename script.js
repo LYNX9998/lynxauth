@@ -16,7 +16,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 
-const API_URL = "https://api.lynxauth.qzz.io";
+const API_URL = "http://127.0.0.1:8000";
 
 
 let currentOwnerId = null;
@@ -64,7 +64,7 @@ auth.onAuthStateChanged(async (user) => {
 
         if (!statusCheckInterval) {
             checkSystemStatus();
-            statusCheckInterval = setInterval(checkSystemStatus, 60000); 
+            statusCheckInterval = setInterval(checkSystemStatus, 60000);
         }
     } else {
         document.getElementById("auth-view").style.display = "flex";
@@ -201,9 +201,9 @@ async function syncSeller(user) {
         if (data.status === "success") {
             currentOwnerId = data.ownerid;
             const group = data.seller_group;
-            
+
             document.getElementById("ownerid-display").innerText = currentOwnerId;
-            
+
             // Handle Tier Labels (Free, Silver, Gold)
             if (group === 2) {
                 document.getElementById("stat-sub").innerText = "Gold Developer";
@@ -307,7 +307,7 @@ async function loadApps(updateStats = true) {
                 // Open our target
                 row.classList.add('expanded');
                 row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
+
                 const input = document.getElementById(`u-name-${pendingAppRedirect}`);
                 if (input) input.focus();
             }
@@ -356,10 +356,10 @@ async function createUser(appid) {
         userEl.value = "";
         passEl.value = "";
         expEl.value = "";
-        
+
         // Refresh apps list to update user counts on dashboard
         loadApps(true);
-        
+
         const currentFilter = document.getElementById("user-app-filter").value;
         if (currentFilter === appid) {
             loadUsersForSelectedApp();
@@ -850,10 +850,10 @@ function closeTimeModal(e) {
 async function openCreateUserModal() {
     const modal = document.getElementById("create-user-modal");
     const select = document.getElementById("cum-appid");
-    
+
     // Pre-select the app if one is already chosen in the filter
     const activeApp = document.getElementById("user-app-filter").value;
-    
+
     if (!cachedApps || cachedApps.length === 0) {
         select.innerHTML = '<option value="" disabled selected>Syncing apps...</option>';
         try {
@@ -917,7 +917,7 @@ async function submitCreateUserFromModal() {
     try {
         await apiCall("/users/create", payload);
         showPopup("Success", `User ${username} created!`);
-        
+
         document.getElementById("cum-username").value = "";
         document.getElementById("cum-password").value = "";
         document.getElementById("cum-expiry").value = "";
