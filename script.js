@@ -16,7 +16,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "http://lynxauth.qzz.io";
 
 
 let currentOwnerId = null;
