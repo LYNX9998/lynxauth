@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LYNX | GOD MODE</title>
+    <link rel="icon" type="image/png" href="frontend/assets/logo.png">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #f5f6fa;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --primary: #4f46e5;
+            --primary-glow: rgba(79, 70, 229, 0.15);
+            --accent: #7c3aed;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --gold: #d97706;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --border-hover: #d1d5db;
+            --font-main: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        *::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glow-overlay {
+            display: none;
+        }
+
+        aside {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 28px 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            position: relative;
+        }
+
+        .brand-container {
+            padding: 0 12px;
+            margin-bottom: 36px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-logo img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+            color: var(--text-main);
+        }
+
+        .nav-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin: 20px 12px 8px;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-item i {
+            font-size: 15px;
+            width: 18px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            color: var(--text-main);
+            background: var(--bg-deep);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: #eef2ff;
+            font-weight: 600;
+        }
+
+        .nav-item.active i {
+            color: var(--primary);
+        }
+
+        .sidebar-footer {
+            display: none;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-deep);
+            position: relative;
+            z-index: 1;
+            overflow-y: auto;
+        }
+
+        .top-navbar {
+            height: 64px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb span:last-child {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .breadcrumb i {
+            font-size: 9px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-deep);
+            padding: 6px 14px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .user-pill .avatar {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .content-container {
+            padding: 36px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view-section {
+            display: none;
+            animation: sectionIn 0.25s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes sectionIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header.page-header {
+            margin-bottom: 28px;
+        }
+
+        header.page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        header.page-header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card::after {
+            display: none;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: var(--font-code);
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .stat-icon-bg {
+            display: none;
+        }
+
+        .search-hero {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .search-box {
+            max-width: 520px;
+            margin: 20px auto 0;
+            position: relative;
+        }
+
+        .search-box i.search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .admin-input {
+            width: 100%;
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            padding: 12px 16px 12px 44px;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .admin-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            bottom: 6px;
+            padding: 0 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-search:hover {
+            filter: brightness(1.1);
+        }
+
+        .profile-container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .profile-header {
+            padding: 28px 32px;
+            background: var(--bg-deep);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            background: #eef2ff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+
+        .profile-title h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .profile-title p {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-family: var(--font-code);
+            margin-top: 2px;
+        }
+
+        .profile-body {
+            padding: 28px 32px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .field-input {
+            width: 100%;
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .field-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .field-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-danger {
+            background: #fef2f2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            margin-top: 12px;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--text-main);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 1000;
+            transition: var(--transition);
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .announcement-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        textarea.field-input {
+            min-height: 160px;
+            resize: none;
+            line-height: 1.6;
+        }
+
+        .admin-table-container {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+            min-width: 1100px;
+        }
+
+        .admin-table th {
+            background: var(--bg-deep);
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .badge-gold {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-silver {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .badge-standard {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-used {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .admin-auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-primary-sm {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary-sm:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-ghost-sm {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-ghost-sm:hover {
+            background: var(--bg-deep);
+            color: var(--text-main);
+        }
+
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .filter-btn.clear {
+            border-color: #fecaca;
+            color: var(--danger);
+        }
+
+        .filter-btn.clear:hover {
+            background: #fef2f2;
+        }
+
+        .search-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .search-inline input {
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            width: 220px;
+            font-family: var(--font-main);
+        }
+
+        .search-inline input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        #scroll-bottom-btn {
+            position: fixed;
+            bottom: 36px;
+            right: 36px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(79,70,229,0.35);
+            z-index: 500;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            opacity: 0;
+        }
+
+        #scroll-bottom-btn.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        #scroll-bottom-btn:hover {
+            transform: translateY(3px);
+            box-shadow: 0 6px 20px rgba(79,70,229,0.45);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -600px 0; }
+            100% { background-position: 600px 0; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 600px 100%;
+            animation: shimmer 1.4s infinite linear;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .skeleton-text { height: 14px; width: 60%; margin-bottom: 10px; }
+        .skeleton-value { height: 36px; width: 80px; margin-top: 4px; }
+        .skeleton-row td { padding: 14px 16px; }
+        .skeleton-cell { height: 14px; border-radius: 6px; background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; }
+
+        @media (max-width: 1024px) {
+            aside {
+                width: 68px;
+                padding: 24px 10px;
+            }
+
+            .brand-text,
+            .nav-label,
+            .nav-item span,
+            .sidebar-footer {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 14px;
+            }
+
+            .brand-container {
+                padding: 0;
+                justify-content: center;
+            }
+
+            .content-container {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="admin-login-overlay" class="admin-auth-overlay">
+        <div class="auth-card">
+            <div style="margin: 0 auto 24px; width: 64px; height: 64px;">
+                <img src="frontend/assets/logo.png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 10px;">LYNX SECURITY</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Enter security key to access
+                admin mainframe.</p>
+            <div style="margin-bottom: 24px; position: relative;">
+                <input type="password" id="overlay-secret" class="admin-input" placeholder="Security Key..."
+                    style="padding-left: 24px; padding-right: 24px;">
+            </div>
+            <button class="btn-action btn-primary" onclick="submitAdminAuth()">AUTHORIZE MAINFRAME</button>
+        </div>
+    </div>
+
+    <div class="glow-overlay"></div>
+
+    <aside>
+        <div class="brand-container">
+            <div class="brand-logo">
+                <img src="frontend/assets/logo.png" alt="LYNX">
+            </div>
+            <div class="brand-text">LYNX AUTH</div>
+        </div>
+
+        <nav>
+            <div class="nav-label">Management</div>
+            <div class="nav-list">
+                <div class="nav-item active" onclick="switchTab('dashboard', this)">
+                    <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('sellers', this)">
+                    <i class="fa-solid fa-user-tie"></i> <span>Sellers List</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('users', this)">
+                    <i class="fa-solid fa-users"></i> <span>App Users</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('codes', this)">
+                    <i class="fa-solid fa-ticket"></i> <span>Gift Codes</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('updates', this)">
+                    <i class="fa-solid fa-broadcast-tower"></i> <span>Post Updates</span>
+                </div>
+            </div>
+
+        </nav>
+
+    </aside>
+
+    <main>
+        <div class="top-navbar">
+            <div class="breadcrumb">
+                <span>Admin</span> <i class="fa-solid fa-chevron-right"></i> <span
+                    id="current-view-name">Dashboard</span>
+            </div>
+            <div class="user-pill">
+                <div class="avatar">G</div>
+                <div style="font-size: 0.85rem; font-weight: 700;">LYNX_ADMIN</div>
+            </div>
+        </div>
+
+        <div class="content-container">
+
+            <section id="dashboard-view" class="view-section active">
+                <header class="page-header">
+                    <h2>Dashboard</h2>
+                    <p>Quick summary of your server and user activity.</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Sellers</div>
+                        <div class="stat-value" id="stat-sellers"><span class="skeleton skeleton-value"></span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-value" id="stat-users"><span class="skeleton skeleton-value"></span></div>
+                    </div>
+                    <div class="stat-card" style="border-color: rgba(251, 191, 36, 0.2);">
+                        <div class="stat-label" style="color: var(--gold);">Gold Plan</div>
+                        <div class="stat-value" id="stat-gold_count"><span class="skeleton skeleton-value"></span></div>
+                    </div>
+                    <div class="stat-card" style="border-color: rgba(148, 163, 184, 0.2);">
+                        <div class="stat-label" style="color: #94a3b8;">Silver Plan</div>
+                        <div class="stat-value" id="stat-silver_count"><span class="skeleton skeleton-value"></span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Apps</div>
+                        <div class="stat-value" id="stat-apps"><span class="skeleton skeleton-value"></span></div>
+                    </div>
+                </div>
+
+                <div
+                    style="background: rgba(0, 255, 170, 0.03); border: 1px solid rgba(0, 255, 170, 0.1); padding: 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 30px;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <i class="fa-solid fa-circle-check" style="color: var(--success);"></i>
+                        <div style="font-size: 0.9rem; font-weight: 500;">Cluster health performing at 99.9% uptime.
+                            Data sync is active.</div>
+                    </div>
+                    <button class="btn-action btn-danger"
+                        style="margin-top:0; padding: 10px 20px; font-size: 0.8rem; width: auto;"
+                        onclick="triggerGhostCleanup()">CLEANUP GHOST DATA</button>
+                </div>
+            </section>
+
+            <section id="sellers-view" class="view-section">
+                <header class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2>Sellers Management</h2>
+                        <p>Total sellers registered and their metadata.</p>
+                    </div>
+                    <button class="btn-primary-sm" style="padding:8px 18px;" onclick="openSearchSellerModal()">Search by
+                        ID</button>
+                </header>
+
+                <div class="filter-bar">
+                    <button class="filter-btn active" id="filter-all" onclick="filterSellers('all')">All</button>
+                    <button class="filter-btn" id="filter-gold" onclick="filterSellers('gold')">Gold</button>
+                    <button class="filter-btn" id="filter-silver" onclick="filterSellers('silver')">Silver</button>
+                    <button class="filter-btn" id="filter-free" onclick="filterSellers('free')">Free</button>
+                    <button class="filter-btn clear" onclick="filterSellers('all')">Clear Filter</button>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Seller Email</th>
+                                <th>Owner ID</th>
+                                <th>Group/Plan</th>
+                                <th>Apps Count</th>
+                                <th>Expires At</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sellers-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="users-view" class="view-section">
+                <header class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                    <div>
+                        <h2>App Users Management</h2>
+                        <p>Manage all end-user accounts registered across all applications.</p>
+                    </div>
+                    <div style="position:relative; min-width:280px;">
+                        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#9ca3af; font-size:14px; pointer-events:none;"></i>
+                        <input type="text" id="users-search-input" oninput="filterUsers()" placeholder="Search username..." style="width:100%; padding:10px 16px 10px 40px; border:1.5px solid #e5e7eb; border-radius:8px; font-size:0.875rem; font-family:var(--font-main); background:#fff; color:var(--text-main); outline:none; transition:border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='#4f46e5';this.style.boxShadow='0 0 0 3px rgba(79,70,229,0.12)'" onblur="this.style.borderColor='#e5e7eb';this.style.boxShadow='none'">
+                        <span id="users-count-badge" style="display:none; position:absolute; right:12px; top:50%; transform:translateY(-50%); background:#eef2ff; color:#4f46e5; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:20px;"></span>
+                    </div>
+                </header>
+
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Password</th>
+                                <th>Application Name</th>
+                                <th>Seller Email</th>
+                                <th>HWID</th>
+                                <th>Expires At</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="codes-view" class="view-section">
+                <header class="page-header">
+                    <h2>Gift Code Mainframe</h2>
+                    <p>Generate and track premium subscription codes.</p>
+                </header>
+
+                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:30px; align-items:start;">
+                    <div class="stat-card" style="background:var(--bg-card); padding:32px;">
+                        <h3 style="margin-bottom:20px; font-weight:800;">Generate Code</h3>
+
+                        <div style="margin-bottom:20px;">
+                            <label class="field-label">Tier Plan</label>
+                            <select id="code-tier" class="field-input">
+                                <option value="1">SILVER PARTNER</option>
+                                <option value="2">GOLD ENTERPRISE</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom:24px;">
+                            <label class="field-label">Duration (Days)</label>
+                            <input type="number" id="code-duration" class="field-input" placeholder="30" value="30">
+                        </div>
+
+                        <div style="margin-bottom:20px;">
+                            <label class="field-label">Max Uses <span
+                                    style="color:var(--text-muted); font-weight:400;">(0 = unlimited)</span></label>
+                            <input type="number" id="code-max-uses" class="field-input" placeholder="1" value="1">
+                        </div>
+
+                        <button class="btn-action btn-primary" onclick="submitGenerateCode()">GENERATE</button>
+                    </div>
+
+                    <div class="admin-table-container" style="margin-top:0;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Code Key</th>
+                                    <th>Tier</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Redeemed By</th>
+                                    <th>Created</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="codes-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="updates-view" class="view-section">
+                <header class="page-header">
+                    <h2>Broadcast Updates</h2>
+                    <p>Send a message to all active users on the landing page.</p>
+                </header>
+
+                <div class="announcement-card">
+                    <div
+                        style="margin-bottom: 32px; padding: 20px; background: rgba(88, 101, 242, 0.05); border: 1px solid rgba(88, 101, 242, 0.1); border-radius: 12px; display: flex; gap: 16px;">
+                        <i class="fa-solid fa-signal-stream" style="color: var(--primary); margin-top: 4px;"></i>
+                        <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-muted);">
+                            Broadcast messages appear instantly. Use this to notify everyone of new features or
+                            maintenance.
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label class="field-label">Update Message</label>
+                        <textarea id="update-msg" class="field-input" placeholder="What's new?..."></textarea>
+                    </div>
+
+                    <button class="btn-action btn-primary" id="btn-publish" onclick="publishUpdate()">
+                        <i class="fa-solid fa-paper-plane" style="margin-right: 10px;"></i> POST UPDATE
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="toast" class="toast"><i class="fa-solid fa-check-circle"></i> <span>Operation Completed Successfully</span>
+    </div>
+
+    <button id="scroll-bottom-btn" title="Scroll to bottom" onclick="scrollMainToBottom()">
+        <i class="fa-solid fa-angles-down"></i>
+    </button>
+
+    <div id="edit-seller-modal" class="popup-backdrop" style="z-index:2000;">
+        <div class="profile-card" style="width:100%; max-width:600px; margin:20px;">
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="profile-title">
+                    <h3 id="res-email">...</h3>
+                    <p id="res-id">AUTHTOKEN_ID_REDACTED</p>
+                </div>
+                <div onclick="closeEditSellerModal()"
+                    style="margin-left: auto; cursor:pointer; color:var(--text-muted); font-size: 1.5rem;">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+            <div class="profile-body">
+                <div class="input-grid">
+                    <div>
+                        <label class="field-label">Linked Applications</label>
+                        <input type="text" id="res-apps-count" class="field-input" disabled>
+                    </div>
+                </div>
+                <div style="margin-bottom: 32px;">
+                    <label class="field-label">Subscription Tier Override</label>
+                    <select id="res-group" class="field-input"
+                        style="color: var(--gold); border-color: rgba(251, 191, 36, 0.3);">
+                        <option value="0">STANDARD_FREE</option>
+                        <option value="1">SILVER_PARTNER</option>
+                        <option value="2">GOLD_ENTERPRISE</option>
+                    </select>
+                </div>
+                <button class="btn-action btn-primary btn-save" onclick="saveChanges()">SAVE CHANGES</button>
+                <div style="margin-top: 24px; border-top: 1px solid rgba(255, 77, 77, 0.1); padding-top: 24px;">
+                    <button class="btn-action btn-danger btn-delete" onclick="deleteSeller()">PURGE ACCOUNT
+                        DATA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="search-seller-modal" class="popup-backdrop" style="z-index:1999;">
+        <div class="auth-card" style="width:100%; max-width:500px; margin:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0;">Find Seller</h3>
+                <div onclick="closeSearchSellerModal()" style="cursor:pointer; color:var(--text-muted);"><i
+                        class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div style="position:relative; margin-bottom:20px;">
+                <input type="text" id="search-id" class="admin-input" placeholder="Paste OwnerID here..."
+                    style="padding-left: 20px;">
+            </div>
+            <button class="btn-action btn-primary" onclick="searchSeller()">FIND SELLER</button>
+        </div>
+    </div>
+
+    <div id="edit-user-expiry-modal" class="popup-backdrop" style="z-index:2000;">
+        <div class="auth-card" style="width:100%; max-width:440px; margin:20px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0;">Edit User Expiry</h3>
+                <div onclick="closeEditUserExpiryModal()" style="cursor:pointer; color:var(--text-muted);"><i
+                        class="fa-solid fa-xmark"></i></div>
+            </div>
+            <input type="hidden" id="edit-user-id">
+            <div style="margin-bottom:20px;">
+                <label class="field-label">Expiry Date & Time</label>
+                <input type="datetime-local" id="edit-user-date" class="field-input">
+            </div>
+            <button class="btn-action btn-primary" onclick="submitUserExpiryChange()">UPDATE EXPIRY</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === '127.0.0.1' ||
+            window.location.hostname === 'localhost' ||
+            window.location.protocol === 'file:' ||
+            !window.location.hostname
+            ? 'http://127.0.0.1:8000'
+            : 'https://api.lynxauth.qzz.io';
+
+        function getAdminSecret() {
+            return sessionStorage.getItem('admin_secret') || '';
+        }
+
+        window.onload = function () {
+            const secret = getAdminSecret();
+            if (secret) {
+                document.getElementById('admin-login-overlay').style.display = 'none';
+                loadStats();
+            }
+        };
+
+        async function submitAdminAuth() {
+            const secret = document.getElementById('overlay-secret').value.trim();
+            if (!secret) return alert('Enter key');
+            try {
+                const res = await fetch(`${API_URL}/admin/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret_key: secret })
+                });
+                if (res.ok) {
+                    sessionStorage.setItem('admin_secret', secret);
+                    document.getElementById('admin-login-overlay').style.display = 'none';
+                    loadStats();
+                } else {
+                    alert('Invalid credentials key');
+                }
+            } catch (e) {
+                alert('Connection failure');
+            }
+        }
+
+        const _scrollTabs = new Set(['sellers', 'users', 'codes']);
+        let _activeTab = 'dashboard';
+
+        function _updateScrollBtn() {
+            const btn = document.getElementById('scroll-bottom-btn');
+            if (!_scrollTabs.has(_activeTab)) { btn.classList.remove('visible'); return; }
+            const main = document.querySelector('main');
+            const atBottom = main.scrollTop + main.clientHeight >= main.scrollHeight - 40;
+            if (atBottom) btn.classList.remove('visible');
+            else btn.classList.add('visible');
+        }
+
+        function scrollMainToBottom() {
+            document.querySelector('main').scrollTo({ top: document.querySelector('main').scrollHeight, behavior: 'smooth' });
+        }
+
+        document.querySelector('main').addEventListener('scroll', _updateScrollBtn);
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId + '-view').classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+
+            const titles = {
+                'dashboard': 'Dashboard',
+                'sellers': 'Sellers Management',
+                'users': 'App Users Management',
+                'codes': 'Gift Code Mainframe',
+                'updates': 'Broadcast Updates'
+            };
+            document.getElementById('current-view-name').innerText = titles[tabId] || 'Admin';
+            _activeTab = tabId;
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'instant' });
+            setTimeout(_updateScrollBtn, 400);
+
+            if (tabId === 'dashboard') loadStats();
+            if (tabId === 'sellers') loadSellers();
+            if (tabId === 'users') loadUsers();
+            if (tabId === 'codes') loadCodes();
+        }
+
+        async function loadStats() {
+            ['stat-sellers','stat-users','stat-gold_count','stat-silver_count','stat-apps'].forEach(id => {
+                document.getElementById(id).innerHTML = '<span class="skeleton skeleton-value"></span>';
+            });
+            try {
+                const res = await fetch(`${API_URL}/admin/stats`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret_key: getAdminSecret() })
+                });
+                if (!res.ok) throw new Error('HTTP Error');
+                const data = await res.json();
+                if (data.status === 'success') {
+                    document.getElementById('stat-sellers').innerText = data.sellers ?? 0;
+                    document.getElementById('stat-users').innerText = data.users ?? 0;
+                    document.getElementById('stat-gold_count').innerText = data.gold ?? 0;
+                    document.getElementById('stat-silver_count').innerText = data.silver ?? 0;
+                    document.getElementById('stat-apps').innerText = data.apps ?? 0;
+                }
+            } catch (e) {
+                document.getElementById('stat-sellers').innerText = 'ERR';
+            }
+        }
+
+        let _sellersCache = [];
+
+        async function loadSellers() {
+            const tbody = document.getElementById('sellers-table-body');
+            tbody.innerHTML = Array(5).fill(`<tr class="skeleton-row">${Array(6).fill('<td><div class="skeleton-cell" style="height:14px; border-radius:6px;"></div></td>').join('')}</tr>`).join('');
+            try {
+                const res = await fetch(`${API_URL}/admin/sellers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret_key: getAdminSecret() })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    _sellersCache = data.sellers;
+                    renderSellers(_sellersCache);
+                }
+            } catch (e) {
+                alert('Failed to load sellers');
+            }
+        }
+
+        function renderSellers(sellers) {
+            const tbody = document.getElementById('sellers-table-body');
+            tbody.innerHTML = '';
+            sellers.forEach(s => {
+                const tr = document.createElement('tr');
+                let tierBadge = '<span class="admin-badge badge-standard">FREE</span>';
+                if (s.seller_group === 1) tierBadge = '<span class="admin-badge badge-silver">SILVER</span>';
+                if (s.seller_group === 2) tierBadge = '<span class="admin-badge badge-gold">GOLD</span>';
+                const exp = s.plan_expires_at ? new Date(s.plan_expires_at).toLocaleDateString() : '—';
+                tr.innerHTML = `
+                    <td>${s.email}</td>
+                    <td style="font-family:var(--font-code); font-size:0.78rem; color:var(--text-muted);">${s.ownerid}</td>
+                    <td>${tierBadge}</td>
+                    <td>${s.app_count}</td>
+                    <td>${exp}</td>
+                    <td style="text-align:right;">
+                        <button class="btn-primary-sm" onclick="editSellerDirect('${s.ownerid}', '${s.email}', ${s.seller_group}, ${s.app_count})">Edit</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            if (!sellers.length) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">No sellers found.</td></tr>';
+        }
+
+        function filterSellers(type) {
+            document.querySelectorAll('.filter-btn:not(.clear)').forEach(b => b.classList.remove('active'));
+            const btnId = { all: 'filter-all', gold: 'filter-gold', silver: 'filter-silver', free: 'filter-free' };
+            if (btnId[type]) document.getElementById(btnId[type]).classList.add('active');
+            const map = { all: null, gold: 2, silver: 1, free: 0 };
+            const group = map[type];
+            const filtered = group === null ? _sellersCache : _sellersCache.filter(s => s.seller_group === group);
+            renderSellers(filtered);
+        }
+
+        let _usersCache = [];
+
+        async function loadUsers() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = Array(6).fill(`<tr class="skeleton-row">${Array(7).fill('<td><div class="skeleton-cell" style="height:14px; border-radius:6px;"></div></td>').join('')}</tr>`).join('');
+            try {
+                const res = await fetch(`${API_URL}/admin/users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret_key: getAdminSecret() })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    _usersCache = data.users;
+                    renderUsers(_usersCache);
+                }
+            } catch (e) {
+                alert('Failed to load users');
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '';
+            users.forEach(u => {
+                const tr = document.createElement('tr');
+                const lockLabel = u.hwid_locked ? 'Unlock' : 'Lock';
+                tr.innerHTML = `
+                    <td style="font-weight:500;">${u.username}</td>
+                    <td style="font-family:var(--font-code); font-size:0.8rem;">${u.password}</td>
+                    <td>${u.app_name}</td>
+                    <td style="color:var(--text-muted);">${u.owner_email}</td>
+                    <td style="font-family:var(--font-code); font-size:0.75rem; color:var(--text-muted);">${u.hwid || '—'}</td>
+                    <td>${u.expires_at ? new Date(u.expires_at).toLocaleDateString() : 'Lifetime'}</td>
+                    <td style="text-align:right; display:flex; gap:6px; justify-content:flex-end;">
+                        <button class="btn-ghost-sm" style="padding:4px 10px; font-size:0.78rem;" onclick="resetUserHwid('${u.id}')">Reset HWID</button>
+                        <button class="btn-ghost-sm" style="padding:4px 10px; font-size:0.78rem;" onclick="toggleUserLock('${u.id}', ${!u.hwid_locked})">${lockLabel}</button>
+                        <button class="btn-primary-sm" style="padding:4px 10px; font-size:0.78rem;" onclick="openEditUserExpiry('${u.id}', '${u.expires_at}')">Expiry</button>
+                        <button style="margin:0; padding:4px 10px; font-size:0.78rem; border-radius:6px; background:#fee2e2; color:#991b1b; border:none; cursor:pointer; font-weight:600;" onclick="deleteUserDirect('${u.id}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            if (!users.length) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px;">No users found.</td></tr>';
+        }
+
+        function filterUsers() {
+            const q = (document.getElementById('users-search-input').value || '').toLowerCase().trim();
+            const filtered = q ? _usersCache.filter(u => u.username && u.username.toLowerCase().includes(q)) : _usersCache;
+            renderUsers(filtered);
+            const badge = document.getElementById('users-count-badge');
+            if (q) {
+                badge.style.display = 'block';
+                badge.textContent = filtered.length + ' found';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        async function loadCodes() {
+            try {
+                const res = await fetch(`${API_URL}/admin/codes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret_key: getAdminSecret() })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    const tbody = document.getElementById('codes-table-body');
+                    tbody.innerHTML = '';
+                    data.codes.forEach(c => {
+                        const tr = document.createElement('tr');
+                        let tierName = c.tier === 1 ? 'SILVER' : 'GOLD';
+                        let statusBadge = c.used ? '<span class="admin-badge badge-used">USED</span>' : (c.disabled ? '<span class="admin-badge badge-used">DISABLED</span>' : '<span class="admin-badge badge-active">ACTIVE</span>');
+                        let toggleText = c.disabled ? 'Enable' : 'Disable';
+                        let actionBtns = '';
+                        if (!c.used) {
+                            actionBtns = `
+                                <button class="btn-ghost-sm" style="padding:4px 8px; font-size:0.8rem;" onclick="toggleCodeStatus('${c.id}')">${toggleText}</button>
+                                <button class="btn-danger" style="margin:0; padding:4px 8px; font-size:0.8rem; border-radius:8px;" onclick="deleteCode('${c.id}')">Delete</button>
+                            `;
+                        } else {
+                            actionBtns = `
+                                <button class="btn-danger" style="margin:0; padding:4px 8px; font-size:0.8rem; border-radius:8px;" onclick="deleteCode('${c.id}')">Delete</button>
+                            `;
+                        }
+                        tr.innerHTML = `
+                            <td style="font-family:var(--font-code); font-weight:700; color:white;">${c.code}</td>
+                            <td>${tierName}</td>
+                            <td>${c.duration_days} Days</td>
+                            <td>${statusBadge}</td>
+                            <td>${c.used_by || 'N/A'}</td>
+                            <td>${new Date(c.created_at).toLocaleDateString()}</td>
+                            <td style="text-align:right; display:flex; gap:6px; justify-content:flex-end;">
+                                ${actionBtns}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (e) {
+                alert('Failed to load codes');
+            }
+        }
+
+        async function submitGenerateCode() {
+            const tier = parseInt(document.getElementById('code-tier').value);
+            const duration = parseInt(document.getElementById('code-duration').value);
+            const maxUses = parseInt(document.getElementById('code-max-uses').value);
+            if (isNaN(duration) || duration <= 0) return alert('Enter valid duration');
+            if (isNaN(maxUses) || maxUses < 0) return alert('Max uses must be 0 or more');
+            try {
+                const res = await fetch(`${API_URL}/admin/generate_code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        secret_key: getAdminSecret(),
+                        tier: tier,
+                        duration_days: duration,
+                        max_uses: maxUses
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast('CODE_GENERATED: ' + data.code);
+                    loadCodes();
+                }
+            } catch (e) {
+                alert('Generation failed');
+            }
+        }
+
+        async function triggerGhostCleanup() {
+            if (!confirm('Are you sure you want to delete all orphaned/ghost applications, users, and licenses?')) return;
+            try {
+                const res = await fetch(`${API_URL}/admin/clean_ghost_data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret_key: getAdminSecret() })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert(`Cleanup Complete:\n- Cleaned Apps: ${data.cleaned_apps}\n- Cleaned Users: ${data.cleaned_users}\n- Cleaned Licenses: ${data.cleaned_licenses}`);
+                    loadStats();
+                }
+            } catch (e) {
+                alert('Cleanup failed');
+            }
+        }
+
+        function editSellerDirect(ownerid, email, group, appsCount) {
+            document.getElementById('edit-seller-modal').style.display = 'flex';
+            document.getElementById('res-email').innerText = email;
+            document.getElementById('res-id').innerText = ownerid;
+            document.getElementById('res-group').value = group;
+            document.getElementById('res-apps-count').value = appsCount + ' ACTIVE NODES';
+        }
+
+        function closeEditSellerModal() {
+            document.getElementById('edit-seller-modal').style.display = 'none';
+        }
+
+        function openSearchSellerModal() {
+            document.getElementById('search-seller-modal').style.display = 'flex';
+        }
+
+        function closeSearchSellerModal() {
+            document.getElementById('search-seller-modal').style.display = 'none';
+        }
+
+        async function searchSeller() {
+            const oid = document.getElementById('search-id').value.trim();
+            if (!oid) return alert('Enter ID');
+            try {
+                const res = await fetch(`${API_URL}/admin/search_seller`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ownerid: oid })
+                });
+                const data = await res.json();
+                if (data.found) {
+                    closeSearchSellerModal();
+                    editSellerDirect(data.data.ownerid, data.data.email, data.data.seller_group, data.data.app_count);
+                } else {
+                    alert('ID not found');
+                }
+            } catch (e) {
+                alert('Scan interrupted');
+            }
+        }
+
+        async function saveChanges() {
+            const oid = document.getElementById('res-id').innerText;
+            const group = parseInt(document.getElementById('res-group').value);
+            try {
+                const res = await fetch(`${API_URL}/admin/update_seller`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ownerid: oid,
+                        seller_group: group
+                    })
+                });
+                if (res.ok) {
+                    showToast('CHANGES_COMMITTED');
+                    closeEditSellerModal();
+                    loadSellers();
+                }
+            } catch (e) {
+                alert('Sync failed');
+            }
+        }
+
+        async function deleteSeller() {
+            const oid = document.getElementById('res-id').innerText;
+            if (!confirm('⚠️ CRITICAL: Permanently purge seller data? This cannot be undone.')) return;
+            try {
+                const res = await fetch(`${API_URL}/seller/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ownerid: oid })
+                });
+                if (res.ok) {
+                    showToast('SELLER_PURGED');
+                    closeEditSellerModal();
+                    loadSellers();
+                }
+            } catch (e) {
+                alert('Purge failed');
+            }
+        }
+
+        async function resetUserHwid(userId) {
+            if (!confirm('Reset HWID for this user?')) return;
+            try {
+                const res = await fetch(`${API_URL}/users/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, action: 'reset_hwid' })
+                });
+                if (res.ok) {
+                    showToast('HWID_RESET_SUCCESS');
+                    loadUsers();
+                }
+            } catch (e) {
+                alert('Action failed');
+            }
+        }
+
+        async function toggleUserLock(userId, lockState) {
+            try {
+                const res = await fetch(`${API_URL}/users/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, action: 'toggle_lock', lock_state: lockState })
+                });
+                if (res.ok) {
+                    showToast('LOCK_STATE_CHANGED');
+                    loadUsers();
+                }
+            } catch (e) {
+                alert('Action failed');
+            }
+        }
+
+        function openEditUserExpiry(userId, currentExpiry) {
+            document.getElementById('edit-user-expiry-modal').style.display = 'flex';
+            document.getElementById('edit-user-id').value = userId;
+            if (currentExpiry) {
+                const date = new Date(currentExpiry);
+                const pad = (num) => String(num).padStart(2, '0');
+                const formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+                document.getElementById('edit-user-date').value = formatted;
+            } else {
+                document.getElementById('edit-user-date').value = '';
+            }
+        }
+
+        function closeEditUserExpiryModal() {
+            document.getElementById('edit-user-expiry-modal').style.display = 'none';
+        }
+
+        async function submitUserExpiryChange() {
+            const userId = document.getElementById('edit-user-id').value;
+            const expiryVal = document.getElementById('edit-user-date').value;
+            if (!expiryVal) return alert('Select date');
+            const isoExpiry = new Date(expiryVal).toISOString();
+            try {
+                const res = await fetch(`${API_URL}/users/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, action: 'set_expiry', expire_str: isoExpiry })
+                });
+                if (res.ok) {
+                    showToast('EXPIRY_UPDATED');
+                    closeEditUserExpiryModal();
+                    loadUsers();
+                }
+            } catch (e) {
+                alert('Action failed');
+            }
+        }
+
+        async function deleteUserDirect(userId) {
+            if (!confirm('Permanently delete this user?')) return;
+            try {
+                const res = await fetch(`${API_URL}/users/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                if (res.ok) {
+                    showToast('USER_DELETED');
+                    loadUsers();
+                }
+            } catch (e) {
+                alert('Action failed');
+            }
+        }
+
+        async function publishUpdate() {
+            const msg = document.getElementById('update-msg').value.trim();
+            if (!msg) return alert('Enter update content');
+            try {
+                const res = await fetch(`${API_URL}/admin/publish_update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, secret_key: getAdminSecret() })
+                });
+                if (res.ok) {
+                    showToast('BROADCAST_COMPLETE');
+                    document.getElementById('update-msg').value = '';
+                } else {
+                    alert('Publish failed');
+                }
+            } catch (e) {
+                alert('Connection failure');
+            }
+        }
+
+        async function toggleCodeStatus(codeId) {
+            try {
+                const res = await fetch(`${API_URL}/admin/action_code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        secret_key: getAdminSecret(),
+                        code_id: codeId,
+                        action: 'toggle_status'
+                    })
+                });
+                if (res.ok) {
+                    showToast('CODE_STATUS_CHANGED');
+                    loadCodes();
+                }
+            } catch (e) {
+                alert('Action failed');
+            }
+        }
+
+        async function deleteCode(codeId) {
+            if (!confirm('Permanently delete this code?')) return;
+            try {
+                const res = await fetch(`${API_URL}/admin/action_code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        secret_key: getAdminSecret(),
+                        code_id: codeId,
+                        action: 'delete'
+                    })
+                });
+                if (res.ok) {
+                    showToast('CODE_DELETED');
+                    loadCodes();
+                }
+            } catch (e) {
+                alert('Action failed');
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            if (msg) t.querySelector('span').innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+
+</html>
